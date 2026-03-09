@@ -1,0 +1,26 @@
+name: TrendRadar MCP
+version: "4.0.0-1"
+slug: trendradar-mcp
+description: TrendRadar MCP server sharing the main TrendRadar config and output directories
+url: https://github.com/Tabstone/ha_addons/tree/main/trendradar-mcp
+arch:
+  - amd64
+  - aarch64
+init: false
+map:
+  - addon_config:rw
+  - homeassistant_config:rw
+ports:
+  3333/tcp: 3333
+ports_description:
+  3333/tcp: TrendRadar MCP HTTP server
+options:
+  TZ: Asia/Shanghai
+  MCP_PORT: 3333
+  env_vars: []
+schema:
+  TZ: str?
+  MCP_PORT: port
+  env_vars:
+    - name: match(^[A-Za-z0-9_]+$)
+      value: str?
