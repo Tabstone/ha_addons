@@ -1,6 +1,6 @@
 # Changelog
 
-## 6.0.0.2
+## 6.0.0-2
 
 - Bump add-on revision to validate Home Assistant update detection.
 

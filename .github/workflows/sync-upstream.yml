@@ -39,7 +39,7 @@ jobs:
           changed = False
           for slug, (image, env_name) in updates.items():
               upstream = os.environ[env_name].strip()
-              wrapper_version = f"{upstream}.1"
+              wrapper_version = f"{upstream}-1"
               build_file = Path(slug) / 'build.yaml'
               config_file = Path(slug) / 'config.yaml'
               changelog_file = Path(slug) / 'CHANGELOG.md'
