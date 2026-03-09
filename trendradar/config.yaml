@@ -1,0 +1,86 @@
+name: TrendRadar
+version: "6.0.0-1"
+slug: trendradar
+description: TrendRadar wrapped for Home Assistant with ingress and persistent config and output directories
+url: https://github.com/Tabstone/ha_addons/tree/main/trendradar
+arch:
+  - amd64
+  - aarch64
+init: false
+ingress: true
+ingress_port: 8080
+map:
+  - addon_config:rw
+  - homeassistant_config:rw
+ports:
+  8080/tcp: 8080
+ports_description:
+  8080/tcp: TrendRadar web server
+options:
+  TZ: Asia/Shanghai
+  RUN_MODE: cron
+  CRON_SCHEDULE: "*/30 * * * *"
+  IMMEDIATE_RUN: true
+  FEISHU_WEBHOOK_URL: ""
+  TELEGRAM_BOT_TOKEN: ""
+  TELEGRAM_CHAT_ID: ""
+  DINGTALK_WEBHOOK_URL: ""
+  WEWORK_WEBHOOK_URL: ""
+  WEWORK_MSG_TYPE: ""
+  EMAIL_FROM: ""
+  EMAIL_PASSWORD: ""
+  EMAIL_TO: ""
+  EMAIL_SMTP_SERVER: ""
+  EMAIL_SMTP_PORT: ""
+  NTFY_SERVER_URL: https://ntfy.sh
+  NTFY_TOPIC: ""
+  NTFY_TOKEN: ""
+  BARK_URL: ""
+  SLACK_WEBHOOK_URL: ""
+  GENERIC_WEBHOOK_URL: ""
+  GENERIC_WEBHOOK_TEMPLATE: ""
+  AI_ANALYSIS_ENABLED: false
+  AI_API_KEY: ""
+  AI_MODEL: ""
+  AI_API_BASE: ""
+  S3_ENDPOINT_URL: ""
+  S3_BUCKET_NAME: ""
+  S3_ACCESS_KEY_ID: ""
+  S3_SECRET_ACCESS_KEY: ""
+  S3_REGION: ""
+  env_vars: []
+schema:
+  TZ: str?
+  RUN_MODE: list(cron|once)
+  CRON_SCHEDULE: str
+  IMMEDIATE_RUN: bool
+  FEISHU_WEBHOOK_URL: str?
+  TELEGRAM_BOT_TOKEN: password?
+  TELEGRAM_CHAT_ID: str?
+  DINGTALK_WEBHOOK_URL: str?
+  WEWORK_WEBHOOK_URL: str?
+  WEWORK_MSG_TYPE: str?
+  EMAIL_FROM: str?
+  EMAIL_PASSWORD: password?
+  EMAIL_TO: str?
+  EMAIL_SMTP_SERVER: str?
+  EMAIL_SMTP_PORT: str?
+  NTFY_SERVER_URL: str?
+  NTFY_TOPIC: str?
+  NTFY_TOKEN: password?
+  BARK_URL: str?
+  SLACK_WEBHOOK_URL: str?
+  GENERIC_WEBHOOK_URL: str?
+  GENERIC_WEBHOOK_TEMPLATE: str?
+  AI_ANALYSIS_ENABLED: bool
+  AI_API_KEY: password?
+  AI_MODEL: str?
+  AI_API_BASE: str?
+  S3_ENDPOINT_URL: str?
+  S3_BUCKET_NAME: str?
+  S3_ACCESS_KEY_ID: str?
+  S3_SECRET_ACCESS_KEY: password?
+  S3_REGION: str?
+  env_vars:
+    - name: match(^[A-Za-z0-9_]+$)
+      value: str?
