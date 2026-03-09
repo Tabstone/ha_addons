@@ -1,5 +1,5 @@
 name: TrendRadar
-version: "6.0.0.2"
+version: "6.0.0-2"
 slug: trendradar
 description: TrendRadar wrapped for Home Assistant with ingress and persistent config and output directories
 url: https://github.com/Tabstone/ha_addons/tree/main/trendradar
