@@ -11,7 +11,6 @@ ingress: true
 ingress_port: 8080
 map:
   - addon_config:rw
-  - homeassistant_config:rw
 ports:
   8080/tcp: 8080
 ports_description:

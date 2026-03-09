@@ -4,10 +4,10 @@ Thin Home Assistant wrapper around `wantcat/trendradar-mcp`.
 
 ## Shared data model
 
-This add-on does **not** maintain its own TrendRadar dataset. It reuses the main add-on paths:
+This add-on does **not** maintain its own TrendRadar dataset. It reuses the main add-on shared directories:
 
-- Shared config: `/homeassistant/addons_config/trendradar`
-- Shared output: `/homeassistant/addons_config/trendradar_output`
+- Shared config: `/addon_configs/trendradar/config`
+- Shared output: `/addon_configs/trendradar/output`
 
 Inside the container they are exposed as:
 
