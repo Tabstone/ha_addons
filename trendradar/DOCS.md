@@ -4,10 +4,10 @@ Thin Home Assistant wrapper around `wantcat/trendradar`.
 
 ## Persistent paths
 
-This add-on keeps config and output as sibling host-visible directories:
+This add-on keeps config and output as sibling directories inside the same public add-on folder:
 
-- Config: `/homeassistant/addons_config/trendradar`
-- Output: `/homeassistant/addons_config/trendradar_output`
+- Config: `/addon_configs/trendradar/config`
+- Output: `/addon_configs/trendradar/output`
 
 Inside the container they are exposed as:
 
@@ -16,12 +16,18 @@ Inside the container they are exposed as:
 
 ## First start
 
-On first boot the add-on seeds these files into `/config` when missing:
+On first boot the add-on creates these directories under its public add-on folder:
+
+- `config/`
+- `output/`
+
+If the 5 core files are missing in `config/`, it seeds:
 
 - `config.yaml`
 - `frequency_words.txt`
 - `ai_analysis_prompt.txt`
 - `ai_translation_prompt.txt`
+- `timeline.yaml`
 
 ## Access
 
