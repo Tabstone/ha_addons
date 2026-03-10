@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.19.21-6
+
+- Restore host_pid/host_ipc settings.
+
 ## 1.19.21-5
 
 - Drop host_pid/host_ipc and set explicit capabilities.
