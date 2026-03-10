@@ -11,5 +11,5 @@ This UI add-on reads the Mihomo config directory from the main add-on:
 
 ## Access
 
-- Ingress enabled (Open Web UI button available).
+- No Ingress (Open Web UI will use host port).
 - Direct access on `http://<homeassistant>:9395`.
