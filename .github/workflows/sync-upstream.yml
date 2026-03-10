@@ -2,6 +2,11 @@ name: Sync upstream versions
 
 on:
   workflow_dispatch:
+    inputs:
+      bump_wrapper:
+        description: "Bump wrapper revision for all add-ons"
+        required: false
+        default: "false"
   schedule:
     - cron: '17 3 * * *'
 
@@ -51,6 +56,7 @@ jobs:
           TRENDRADAR_MCP_TAG: ${{ steps.upstream.outputs.trendradar_mcp_tag }}
           CLI_PROXY_API_VERSION: ${{ steps.upstream.outputs.cli_proxy_api }}
           CLI_PROXY_API_TAG: ${{ steps.upstream.outputs.cli_proxy_api_tag }}
+          BUMP_WRAPPER: ${{ github.event.inputs.bump_wrapper || 'false' }}
         run: |
           python3 <<'PY'
           from pathlib import Path
@@ -65,13 +71,26 @@ jobs:
               ('trendradar-mcp', 'wantcat/trendradar-mcp', 'TRENDRADAR_MCP_VERSION', 'TRENDRADAR_MCP_TAG'),
               ('cli-proxy-api',  'eceasy/cli-proxy-api',   'CLI_PROXY_API_VERSION',  'CLI_PROXY_API_TAG'),
           ]
+          bump_wrapper = os.environ.get('BUMP_WRAPPER', 'false').lower() == 'true'
           changed = False
           for slug, image, version_env, tag_env in updates:
               upstream = os.environ.get(version_env, '').strip()
               image_tag = os.environ.get(tag_env, '').strip()
               if not upstream or not image_tag:
                   continue
-              wrapper_version = f"{upstream}-1"
+              config_file = Path(slug) / 'config.yaml'
+              config_text = config_file.read_text()
+              current_version_match = re.search(r'version: "([^"]+)"', config_text)
+              current_version = current_version_match.group(1) if current_version_match else ''
+              base_version = upstream
+              wrapper_version = f"{base_version}-1"
+              if bump_wrapper:
+                  # If current version matches base_version-N, increment N
+                  m = re.match(rf"{re.escape(base_version)}-(\d+)$", current_version)
+                  if m:
+                      wrapper_version = f"{base_version}-{int(m.group(1)) + 1}"
+                  else:
+                      wrapper_version = f"{base_version}-2"
               build_file = Path(slug) / 'build.yaml'
               config_file = Path(slug) / 'config.yaml'
               changelog_file = Path(slug) / 'CHANGELOG.md'
