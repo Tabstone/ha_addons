@@ -16,4 +16,4 @@ if [ "$#" -gt 0 ]; then
   exec "$@"
 fi
 
-exec /entrypoint.sh
+exec /mihomo
