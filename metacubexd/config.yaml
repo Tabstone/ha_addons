@@ -1,5 +1,5 @@
 name: MetaCubeXD
-version: "1.241.3-4"
+version: "1.241.3-5"
 slug: metacubexd
 description: MetaCubeXD UI for Mihomo
 url: https://github.com/Tabstone/ha_addons/tree/main/metacubexd
@@ -14,6 +14,6 @@ panel_title: MetaCubeXD
 map:
   - all_addon_configs:rw
 ports:
-  9395/tcp: 80
+  80/tcp: 9395
 ports_description:
-  9395/tcp: MetaCubeXD web UI
+  80/tcp: MetaCubeXD web UI
