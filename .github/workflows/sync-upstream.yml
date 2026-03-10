@@ -15,30 +15,40 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Fetch upstream versions
+      - name: Fetch upstream versions from Docker Hub
         id: upstream
         run: |
-          echo "trendradar=$(curl -fsSL https://raw.githubusercontent.com/sansan0/TrendRadar/master/version)" >> "$GITHUB_OUTPUT"
-          echo "trendradar_mcp=$(curl -fsSL https://raw.githubusercontent.com/sansan0/TrendRadar/master/version_mcp)" >> "$GITHUB_OUTPUT"
-
-          # cli-proxy-api: poll Docker Hub for latest versioned tag (skip 'latest')
-          CLI_PROXY_VERSION=$(curl -fsSL "https://hub.docker.com/v2/repositories/eceasy/cli-proxy-api/tags/?page_size=50&ordering=last_updated" | python3 -c "
+          # Generic function: poll Docker Hub for latest versioned tag
+          get_dockerhub_latest() {
+            local repo="$1"
+            curl -fsSL "https://hub.docker.com/v2/repositories/${repo}/tags/?page_size=50&ordering=last_updated" | python3 -c "
           import sys, json, re
           data = json.load(sys.stdin)
-          tags = [r['name'] for r in data.get('results', []) if r['name'] != 'latest']
-          # prefer semver-like tags (vX.Y.Z or X.Y.Z)
+          tags = [r['name'] for r in data.get('results', []) if r['name'] not in ('latest', 'dev', 'nightly', 'beta')]
           semver = [t for t in tags if re.match(r'^v?\d+\.\d+', t)]
           print(semver[0] if semver else (tags[0] if tags else ''))
-          " 2>/dev/null || echo "")
-          # strip leading 'v' for addon version, keep original for image tag
-          echo "cli_proxy_api_tag=$CLI_PROXY_VERSION" >> "$GITHUB_OUTPUT"
-          echo "cli_proxy_api=${CLI_PROXY_VERSION#v}" >> "$GITHUB_OUTPUT"
+          " 2>/dev/null || echo ""
+          }
+
+          TR_TAG=$(get_dockerhub_latest "wantcat/trendradar")
+          echo "trendradar_tag=$TR_TAG" >> "$GITHUB_OUTPUT"
+          echo "trendradar=${TR_TAG#v}" >> "$GITHUB_OUTPUT"
+
+          MCP_TAG=$(get_dockerhub_latest "wantcat/trendradar-mcp")
+          echo "trendradar_mcp_tag=$MCP_TAG" >> "$GITHUB_OUTPUT"
+          echo "trendradar_mcp=${MCP_TAG#v}" >> "$GITHUB_OUTPUT"
+
+          CLI_TAG=$(get_dockerhub_latest "eceasy/cli-proxy-api")
+          echo "cli_proxy_api_tag=$CLI_TAG" >> "$GITHUB_OUTPUT"
+          echo "cli_proxy_api=${CLI_TAG#v}" >> "$GITHUB_OUTPUT"
 
       - name: Update addon metadata
         id: update
         env:
           TRENDRADAR_VERSION: ${{ steps.upstream.outputs.trendradar }}
+          TRENDRADAR_TAG: ${{ steps.upstream.outputs.trendradar_tag }}
           TRENDRADAR_MCP_VERSION: ${{ steps.upstream.outputs.trendradar_mcp }}
+          TRENDRADAR_MCP_TAG: ${{ steps.upstream.outputs.trendradar_mcp_tag }}
           CLI_PROXY_API_VERSION: ${{ steps.upstream.outputs.cli_proxy_api }}
           CLI_PROXY_API_TAG: ${{ steps.upstream.outputs.cli_proxy_api_tag }}
         run: |
@@ -47,22 +57,20 @@ jobs:
           import re
           import os
 
-          # image_tag_env: env var holding the exact Docker Hub tag for build.yaml
-          # version_env: env var holding the clean version for config.yaml (no 'v' prefix)
-          updates = {
-              'trendradar': ('wantcat/trendradar', 'TRENDRADAR_VERSION', None),
-              'trendradar-mcp': ('wantcat/trendradar-mcp', 'TRENDRADAR_MCP_VERSION', None),
-              'cli-proxy-api': ('eceasy/cli-proxy-api', 'CLI_PROXY_API_VERSION', 'CLI_PROXY_API_TAG'),
-          }
+          # (slug, image, version_env, tag_env)
+          # version_env: clean version without 'v' prefix (for config.yaml)
+          # tag_env: exact Docker Hub tag (for build.yaml)
+          updates = [
+              ('trendradar',     'wantcat/trendradar',     'TRENDRADAR_VERSION',     'TRENDRADAR_TAG'),
+              ('trendradar-mcp', 'wantcat/trendradar-mcp', 'TRENDRADAR_MCP_VERSION', 'TRENDRADAR_MCP_TAG'),
+              ('cli-proxy-api',  'eceasy/cli-proxy-api',   'CLI_PROXY_API_VERSION',  'CLI_PROXY_API_TAG'),
+          ]
           changed = False
-          for slug, (image, version_env, tag_env) in updates.items():
-              upstream = os.environ[version_env].strip()
-              if not upstream or upstream == 'latest':
+          for slug, image, version_env, tag_env in updates:
+              upstream = os.environ.get(version_env, '').strip()
+              image_tag = os.environ.get(tag_env, '').strip()
+              if not upstream or not image_tag:
                   continue
-              # image_tag: exact tag for Docker Hub; defaults to upstream version
-              image_tag = os.environ.get(tag_env, '').strip() if tag_env else upstream
-              if not image_tag:
-                  image_tag = upstream
               wrapper_version = f"{upstream}-1"
               build_file = Path(slug) / 'build.yaml'
               config_file = Path(slug) / 'config.yaml'
@@ -81,7 +89,7 @@ jobs:
               heading = f'## {wrapper_version}'
               if heading not in changelog_text:
                   lines = changelog_text.splitlines()
-                  insert = [heading, '', f'- Sync upstream image to {upstream}.', '']
+                  insert = [heading, '', f'- Sync upstream image to {image_tag}.', '']
                   changelog_file.write_text('\n'.join(lines[:1] + [''] + insert + lines[1:]).rstrip() + '\n')
                   changed = True
           github_output = Path(os.environ['GITHUB_OUTPUT'])
@@ -99,6 +107,6 @@ jobs:
           title: "chore: sync upstream addon versions"
           body: |
             ## Summary
-            - sync upstream image versions for all add-ons
+            - sync upstream image versions for all add-ons (source: Docker Hub)
             - update wrapper addon versions
             - append changelog entries
