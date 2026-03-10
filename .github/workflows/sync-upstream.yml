@@ -21,15 +21,9 @@ jobs:
           echo "trendradar=$(curl -fsSL https://raw.githubusercontent.com/sansan0/TrendRadar/master/version)" >> "$GITHUB_OUTPUT"
           echo "trendradar_mcp=$(curl -fsSL https://raw.githubusercontent.com/sansan0/TrendRadar/master/version_mcp)" >> "$GITHUB_OUTPUT"
 
-          # cli-proxy-api: poll Docker Hub for latest non-latest tag
-          CLI_PROXY_TAGS=$(curl -fsSL "https://hub.docker.com/v2/repositories/eceasy/cli-proxy-api/tags/?page_size=50&ordering=last_updated" 2>/dev/null || echo '{}')
-          CLI_PROXY_VERSION=$(echo "$CLI_PROXY_TAGS" | python3 -c "
-          import sys, json
-          data = json.load(sys.stdin)
-          tags = [r['name'] for r in data.get('results', []) if r['name'] != 'latest']
-          # prefer semver-like tags
-          print(tags[0] if tags else 'latest')
-          " 2>/dev/null || echo "latest")
+          # cli-proxy-api: get latest release tag from GitHub (strip leading 'v')
+          CLI_PROXY_TAG=$(curl -fsSL "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/latest" | python3 -c "import sys,json; print(json.load(sys.stdin)['tag_name'])" 2>/dev/null || echo "")
+          CLI_PROXY_VERSION="${CLI_PROXY_TAG#v}"
           echo "cli_proxy_api=$CLI_PROXY_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Update addon metadata
@@ -44,22 +38,24 @@ jobs:
           import re
           import os
 
+          # tag_prefix: prepended to upstream version when writing build.yaml image tags
           updates = {
-              'trendradar': ('wantcat/trendradar', 'TRENDRADAR_VERSION'),
-              'trendradar-mcp': ('wantcat/trendradar-mcp', 'TRENDRADAR_MCP_VERSION'),
-              'cli-proxy-api': ('eceasy/cli-proxy-api', 'CLI_PROXY_API_VERSION'),
+              'trendradar': ('wantcat/trendradar', 'TRENDRADAR_VERSION', ''),
+              'trendradar-mcp': ('wantcat/trendradar-mcp', 'TRENDRADAR_MCP_VERSION', ''),
+              'cli-proxy-api': ('eceasy/cli-proxy-api', 'CLI_PROXY_API_VERSION', 'v'),
           }
           changed = False
-          for slug, (image, env_name) in updates.items():
+          for slug, (image, env_name, tag_prefix) in updates.items():
               upstream = os.environ[env_name].strip()
               if not upstream or upstream == 'latest':
                   continue
+              image_tag = f"{tag_prefix}{upstream}"
               wrapper_version = f"{upstream}-1"
               build_file = Path(slug) / 'build.yaml'
               config_file = Path(slug) / 'config.yaml'
               changelog_file = Path(slug) / 'CHANGELOG.md'
               build_text = build_file.read_text()
-              new_build = re.sub(rf'{re.escape(image)}:[^\n]+', f'{image}:{upstream}', build_text)
+              new_build = re.sub(rf'{re.escape(image)}:[^\n]+', f'{image}:{image_tag}', build_text)
               if new_build != build_text:
                   build_file.write_text(new_build)
                   changed = True
