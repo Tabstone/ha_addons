@@ -1,6 +1,8 @@
 ARG BUILD_FROM
 FROM ${BUILD_FROM}
 
+RUN apk add --no-cache jq
+
 COPY defaults /defaults
 COPY rootfs /
 COPY run.sh /run.sh

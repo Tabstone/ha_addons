@@ -1,38 +1,29 @@
 #!/bin/sh
 set -eu
 
-python3 - <<'PY' 2>/dev/null || python - <<'PY'
-import json
-import pathlib
-import shlex
+OPTIONS_FILE="/data/options.json"
+ENV_FILE="/tmp/addon_env.sh"
 
-options_path = pathlib.Path('/data/options.json')
-options = json.loads(options_path.read_text()) if options_path.exists() else {}
+: > "$ENV_FILE"
 
-def stringify(value):
-    if isinstance(value, bool):
-        return 'true' if value else 'false'
-    return str(value)
+if [ -f "$OPTIONS_FILE" ]; then
+  # TZ with default
+  TZ=$(jq -r '.TZ // "Asia/Shanghai"' "$OPTIONS_FILE")
+  echo "export TZ='${TZ}'" >> "$ENV_FILE"
 
-defaults = {
-    'TZ': 'Asia/Shanghai',
-}
-
-env = {}
-for key, default in defaults.items():
-    env[key] = stringify(options.get(key, default))
-
-for item in options.get('env_vars', []):
-    if not isinstance(item, dict):
-        continue
-    name = item.get('name')
-    if not name or name in env:
-        continue
-    value = item.get('value', '')
-    env[name] = stringify(value)
-
-output = pathlib.Path('/tmp/addon_env.sh')
-with output.open('w', encoding='utf-8') as fh:
-    for key, value in env.items():
-        fh.write(f'export {key}={shlex.quote(value)}\n')
-PY
+  # Process env_vars array
+  ENV_COUNT=$(jq -r '.env_vars | length' "$OPTIONS_FILE" 2>/dev/null || echo "0")
+  i=0
+  while [ "$i" -lt "$ENV_COUNT" ]; do
+    NAME=$(jq -r ".env_vars[$i].name // empty" "$OPTIONS_FILE")
+    VALUE=$(jq -r ".env_vars[$i].value // empty" "$OPTIONS_FILE")
+    if [ -n "$NAME" ]; then
+      # Escape single quotes in value
+      ESCAPED_VALUE=$(printf '%s' "$VALUE" | sed "s/'/'\\\\''/g")
+      echo "export ${NAME}='${ESCAPED_VALUE}'" >> "$ENV_FILE"
+    fi
+    i=$((i + 1))
+  done
+else
+  echo "export TZ='Asia/Shanghai'" >> "$ENV_FILE"
+fi
