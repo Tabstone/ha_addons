@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.19.21-3
+
+- Update privileged schema to list format.
+
 ## 1.19.21-2
 
 - Update default config template.
