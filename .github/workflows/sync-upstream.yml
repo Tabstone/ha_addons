@@ -35,6 +35,16 @@ jobs:
           " 2>/dev/null || echo ""
           }
 
+          # GitHub tags (GHCR often requires auth, use repo tags)
+          get_github_latest_tag() {
+            local repo="$1"
+            curl -fsSL "https://api.github.com/repos/${repo}/tags?per_page=100" | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          print(data[0]['name'] if data else '')
+          " 2>/dev/null || echo ""
+          }
+
           TR_TAG=$(get_dockerhub_latest "wantcat/trendradar")
           echo "trendradar_tag=$TR_TAG" >> "$GITHUB_OUTPUT"
           echo "trendradar=${TR_TAG#v}" >> "$GITHUB_OUTPUT"
@@ -47,6 +57,14 @@ jobs:
           echo "cli_proxy_api_tag=$CLI_TAG" >> "$GITHUB_OUTPUT"
           echo "cli_proxy_api=${CLI_TAG#v}" >> "$GITHUB_OUTPUT"
 
+          MIHOMO_TAG=$(get_dockerhub_latest "metacubex/mihomo")
+          echo "mihomo_tag=$MIHOMO_TAG" >> "$GITHUB_OUTPUT"
+          echo "mihomo=${MIHOMO_TAG#v}" >> "$GITHUB_OUTPUT"
+
+          METACUBEXD_TAG=$(get_github_latest_tag "MetaCubeX/metacubexd")
+          echo "metacubexd_tag=$METACUBEXD_TAG" >> "$GITHUB_OUTPUT"
+          echo "metacubexd=${METACUBEXD_TAG#v}" >> "$GITHUB_OUTPUT"
+
       - name: Update addon metadata
         id: update
         env:
@@ -56,6 +74,10 @@ jobs:
           TRENDRADAR_MCP_TAG: ${{ steps.upstream.outputs.trendradar_mcp_tag }}
           CLI_PROXY_API_VERSION: ${{ steps.upstream.outputs.cli_proxy_api }}
           CLI_PROXY_API_TAG: ${{ steps.upstream.outputs.cli_proxy_api_tag }}
+          MIHOMO_VERSION: ${{ steps.upstream.outputs.mihomo }}
+          MIHOMO_TAG: ${{ steps.upstream.outputs.mihomo_tag }}
+          METACUBEXD_VERSION: ${{ steps.upstream.outputs.metacubexd }}
+          METACUBEXD_TAG: ${{ steps.upstream.outputs.metacubexd_tag }}
           BUMP_WRAPPER: ${{ github.event.inputs.bump_wrapper || 'false' }}
         run: |
           python3 <<'PY'
@@ -67,9 +89,11 @@ jobs:
           # version_env: clean version without 'v' prefix (for config.yaml)
           # tag_env: exact Docker Hub tag (for build.yaml)
           updates = [
-              ('trendradar',     'wantcat/trendradar',     'TRENDRADAR_VERSION',     'TRENDRADAR_TAG'),
-              ('trendradar-mcp', 'wantcat/trendradar-mcp', 'TRENDRADAR_MCP_VERSION', 'TRENDRADAR_MCP_TAG'),
-              ('cli-proxy-api',  'eceasy/cli-proxy-api',   'CLI_PROXY_API_VERSION',  'CLI_PROXY_API_TAG'),
+              ('trendradar',     'wantcat/trendradar',        'TRENDRADAR_VERSION',     'TRENDRADAR_TAG'),
+              ('trendradar-mcp', 'wantcat/trendradar-mcp',    'TRENDRADAR_MCP_VERSION', 'TRENDRADAR_MCP_TAG'),
+              ('cli-proxy-api',  'eceasy/cli-proxy-api',      'CLI_PROXY_API_VERSION',  'CLI_PROXY_API_TAG'),
+              ('mihomo',         'metacubex/mihomo',          'MIHOMO_VERSION',         'MIHOMO_TAG'),
+              ('metacubexd',     'ghcr.io/metacubex/metacubexd', 'METACUBEXD_VERSION',   'METACUBEXD_TAG'),
           ]
           bump_wrapper = os.environ.get('BUMP_WRAPPER', 'false').lower() == 'true'
           changed = False
