@@ -1,7 +1,6 @@
 ARG BUILD_FROM
 FROM ${BUILD_FROM}
 
-COPY defaults /defaults
 COPY rootfs /
 COPY run.sh /run.sh
 
