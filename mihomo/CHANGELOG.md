@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.19.21-8
+
+- Fix entrypoint to run /mihomo.
+
 ## 1.19.21-7
 
 - Restore default config template and avoid mountpoint removal errors.
