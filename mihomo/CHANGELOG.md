@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.19.21-5
+
+- Drop host_pid/host_ipc and set explicit capabilities.
+
 ## 1.19.21-4
 
 - Remove bundled default config template.
