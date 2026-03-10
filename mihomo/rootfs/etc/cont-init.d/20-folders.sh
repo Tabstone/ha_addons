@@ -19,9 +19,6 @@ if [ -d /root/.config/mihomo ] && [ ! -L /root/.config/mihomo ]; then
   done
 fi
 
-if [ ! -f "$APP_CONFIG_DIR/config.yaml" ] && [ -f "/defaults/config.yaml" ]; then
-  cp "/defaults/config.yaml" "$APP_CONFIG_DIR/config.yaml"
-fi
 
 rm -rf /root/.config/mihomo
 ln -s "$APP_CONFIG_DIR" /root/.config/mihomo
