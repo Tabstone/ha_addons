@@ -1,0 +1,25 @@
+name: CLI Proxy API
+version: "latest-1"
+slug: cli-proxy-api
+description: CLI Proxy API wrapped for Home Assistant with persistent config and auth directories
+url: https://github.com/Tabstone/ha_addons/tree/main/cli-proxy-api
+arch:
+  - amd64
+  - aarch64
+init: false
+ingress: true
+ingress_port: 8317
+map:
+  - addon_config:rw
+ports:
+  8317/tcp: 8317
+ports_description:
+  8317/tcp: CLI Proxy API server
+options:
+  TZ: Asia/Shanghai
+  env_vars: []
+schema:
+  TZ: str?
+  env_vars:
+    - name: match(^[A-Za-z0-9_]+$)
+      value: str?

@@ -21,11 +21,23 @@ jobs:
           echo "trendradar=$(curl -fsSL https://raw.githubusercontent.com/sansan0/TrendRadar/master/version)" >> "$GITHUB_OUTPUT"
           echo "trendradar_mcp=$(curl -fsSL https://raw.githubusercontent.com/sansan0/TrendRadar/master/version_mcp)" >> "$GITHUB_OUTPUT"
 
+          # cli-proxy-api: poll Docker Hub for latest non-latest tag
+          CLI_PROXY_TAGS=$(curl -fsSL "https://hub.docker.com/v2/repositories/eceasy/cli-proxy-api/tags/?page_size=50&ordering=last_updated" 2>/dev/null || echo '{}')
+          CLI_PROXY_VERSION=$(echo "$CLI_PROXY_TAGS" | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          tags = [r['name'] for r in data.get('results', []) if r['name'] != 'latest']
+          # prefer semver-like tags
+          print(tags[0] if tags else 'latest')
+          " 2>/dev/null || echo "latest")
+          echo "cli_proxy_api=$CLI_PROXY_VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Update addon metadata
         id: update
         env:
           TRENDRADAR_VERSION: ${{ steps.upstream.outputs.trendradar }}
           TRENDRADAR_MCP_VERSION: ${{ steps.upstream.outputs.trendradar_mcp }}
+          CLI_PROXY_API_VERSION: ${{ steps.upstream.outputs.cli_proxy_api }}
         run: |
           python3 <<'PY'
           from pathlib import Path
@@ -35,10 +47,13 @@ jobs:
           updates = {
               'trendradar': ('wantcat/trendradar', 'TRENDRADAR_VERSION'),
               'trendradar-mcp': ('wantcat/trendradar-mcp', 'TRENDRADAR_MCP_VERSION'),
+              'cli-proxy-api': ('eceasy/cli-proxy-api', 'CLI_PROXY_API_VERSION'),
           }
           changed = False
           for slug, (image, env_name) in updates.items():
               upstream = os.environ[env_name].strip()
+              if not upstream or upstream == 'latest':
+                  continue
               wrapper_version = f"{upstream}-1"
               build_file = Path(slug) / 'build.yaml'
               config_file = Path(slug) / 'config.yaml'
@@ -69,12 +84,12 @@ jobs:
         if: steps.update.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: "chore: sync upstream TrendRadar versions"
+          commit-message: "chore: sync upstream addon versions"
           branch: chore/sync-upstream-versions
           delete-branch: true
-          title: "chore: sync upstream TrendRadar versions"
+          title: "chore: sync upstream addon versions"
           body: |
             ## Summary
-            - sync TrendRadar upstream image versions
+            - sync upstream image versions for all add-ons
             - update wrapper addon versions
             - append changelog entries

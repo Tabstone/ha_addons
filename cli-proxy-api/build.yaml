@@ -1,0 +1,3 @@
+build_from:
+  amd64: eceasy/cli-proxy-api:latest
+  aarch64: eceasy/cli-proxy-api:latest
