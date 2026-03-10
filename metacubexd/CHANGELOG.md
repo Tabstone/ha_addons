@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.241.3-5
+
+- Fix port mapping to map container 80 to host 9395.
+
 ## 1.241.3-4
 
 - Enable ingress and add sidebar panel settings.
