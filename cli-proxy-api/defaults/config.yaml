@@ -16,18 +16,16 @@ remote-management:
 # 管理密钥。若填写明文，启动时会自动哈希后生效。
 # 所有管理请求（包括本地）都需要该密钥。
 # 留空则完全禁用管理 API（所有 /v0/management 路由返回 404）。
-  secret-key: "$2a$10$Avpv9tSpVYAM4GwR7ZYeDeC14p6rZiziXrQKMG98CiOFTUpwyfQDK"
+  secret-key: "123456"
 # 为 true 时禁用内置管理面板资源下载与路由。
   disable-control-panel: false
 # 管理面板的 GitHub 仓库，可填写仓库 URL 或 releases API URL。
   panel-github-repository: "https://github.com/router-for-me/Cli-Proxy-API-Management-Center"
 # 认证目录（支持 ~ 展开为主目录）
 auth-dir: "~/.cli-proxy-api"
-# 用于请求认证的 API 密钥
+# 用于请求认证的 API 密钥（已脱敏示例）
 api-keys:
-  - sk-B47wXmvSAAvGV8DrK
-  - sk-DoX1q7dV3ccYfXNlE
-  - your-api-key-3
+  - "sk-***"
 # 是否启用调试日志
 debug: false
 # 为 true 时禁用高开销 HTTP 中间件以降低高并发下的内存占用

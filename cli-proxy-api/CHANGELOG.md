@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.8.50-3
+
+- Update default management secret and redact API keys.
+- Document management URL and default secret.
+
 ## 6.8.50-2
 
 - Fix ingress entry path and remove python dependency.
