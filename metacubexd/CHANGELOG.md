@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.241.3-4
+
+- Enable ingress and add sidebar panel settings.
+
 ## 1.241.3-3
 
 - Change host port to 9395.
