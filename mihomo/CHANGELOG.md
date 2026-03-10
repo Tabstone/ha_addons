@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.19.21-7
+
+- Restore default config template and avoid mountpoint removal errors.
+
 ## 1.19.21-6
 
 - Restore host_pid/host_ipc settings.
