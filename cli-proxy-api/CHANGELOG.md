@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.8.50-4
+
+- Update management URL in docs.
+
 ## 6.8.50-3
 
 - Update default management secret and redact API keys.
