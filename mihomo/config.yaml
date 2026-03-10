@@ -1,5 +1,5 @@
 name: Mihomo
-version: "1.19.21-5"
+version: "1.19.21-6"
 slug: mihomo
 description: Mihomo core wrapped for Home Assistant with persistent config
 url: https://github.com/Tabstone/ha_addons/tree/main/mihomo
@@ -13,6 +13,8 @@ privileged:
   - SYS_ADMIN
   - NET_RAW
 apparmor: false
+host_pid: true
+host_ipc: true
 devices:
   - /dev/net/tun
 map:
