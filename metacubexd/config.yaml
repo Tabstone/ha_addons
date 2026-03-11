@@ -13,3 +13,4 @@ ports:
   80/tcp: 9395
 ports_description:
   80/tcp: MetaCubeXD web UI
+webui: http://[HOST]:[PORT:80]/
