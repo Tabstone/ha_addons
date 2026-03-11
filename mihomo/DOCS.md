@@ -6,8 +6,10 @@ Thin Home Assistant wrapper around `metacubex/mihomo`.
 
 This add-on keeps its config in the add-on public folder:
 
-- Host: `/addon_configs/mihomo/config`
+- Host: `/addon_configs/9d486770_mihomo/config`
 - Container: `/root/.config/mihomo`
+
+Home Assistant prefixes add-on slugs with the repository ID (for example, `9d486770_`). If your install uses a different prefix, replace it in the path above.
 
 Inside the add-on, the wrapper links `/root/.config/mihomo` to `/config/config`.
 
