@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.8.51-1
+
+- Sync upstream image to v6.8.51.
+
+
 ## 6.8.50-4
 
 - Update management URL in docs.

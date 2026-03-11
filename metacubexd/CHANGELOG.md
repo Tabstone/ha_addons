@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.241.3-7
+
+- Sync upstream image to v1.241.3.
+
+
 ## 1.241.3-6
 
 - Disable ingress and panel; use external host port access.

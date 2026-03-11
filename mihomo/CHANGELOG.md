@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.19.21-10
+
+- Sync upstream image to v1.19.21.
+
+
 ## 1.19.21-9
 
 - Expose external controller to LAN and add default secret.
