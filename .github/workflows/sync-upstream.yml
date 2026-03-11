@@ -30,8 +30,26 @@ jobs:
           import sys, json, re
           data = json.load(sys.stdin)
           tags = [r['name'] for r in data.get('results', []) if r['name'] not in ('latest', 'dev', 'nightly', 'beta')]
-          semver = [t for t in tags if re.match(r'^v?\d+\.\d+', t)]
-          print(semver[0] if semver else (tags[0] if tags else ''))
+
+          def parse_full(tag):
+            m = re.match(r'^v?(\d+)\.(\d+)\.(\d+)$', tag)
+            return (int(m.group(1)), int(m.group(2)), int(m.group(3))) if m else None
+
+          def parse_partial(tag):
+            m = re.match(r'^v?(\d+)\.(\d+)$', tag)
+            return (int(m.group(1)), int(m.group(2)), 0) if m else None
+
+          full = [(parse_full(t), t) for t in tags if parse_full(t)]
+          if full:
+            print(max(full, key=lambda item: item[0])[1])
+            raise SystemExit(0)
+
+          partial = [(parse_partial(t), t) for t in tags if parse_partial(t)]
+          if partial:
+            print(max(partial, key=lambda item: item[0])[1])
+            raise SystemExit(0)
+
+          print(tags[0] if tags else '')
           " 2>/dev/null || echo ""
           }
 
@@ -106,15 +124,18 @@ jobs:
               config_text = config_file.read_text()
               current_version_match = re.search(r'version: "([^"]+)"', config_text)
               current_version = current_version_match.group(1) if current_version_match else ''
-              base_version = upstream
-              wrapper_version = f"{base_version}-1"
-              if bump_wrapper:
-                  # If current version matches base_version-N, increment N
-                  m = re.match(rf"{re.escape(base_version)}-(\d+)$", current_version)
-                  if m:
-                      wrapper_version = f"{base_version}-{int(m.group(1)) + 1}"
+              base_version = upstream.split('-', 1)[0]
+              current_base, current_suffix = (current_version.split('-', 1) + [None])[:2] if current_version else ('', None)
+              current_suffix_num = int(current_suffix) if current_suffix and current_suffix.isdigit() else None
+
+              if base_version == current_base:
+                  if bump_wrapper:
+                      next_suffix = (current_suffix_num or 0) + 1
+                      wrapper_version = f"{base_version}-{next_suffix}"
                   else:
-                      wrapper_version = f"{base_version}-2"
+                      wrapper_version = current_version or f"{base_version}-1"
+              else:
+                  wrapper_version = f"{base_version}-1"
               build_file = Path(slug) / 'build.yaml'
               config_file = Path(slug) / 'config.yaml'
               changelog_file = Path(slug) / 'CHANGELOG.md'
