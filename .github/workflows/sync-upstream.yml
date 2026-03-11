@@ -170,6 +170,7 @@ jobs:
         if: steps.update.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ secrets.PAT }}
           commit-message: "chore: sync upstream addon versions"
           branch: chore/sync-upstream-versions
           delete-branch: true
@@ -180,9 +181,33 @@ jobs:
             - update wrapper addon versions
             - append changelog entries
 
-      - name: Enable auto-merge
+      - name: Wait for addon metadata check
         if: steps.update.outputs.changed == 'true' && steps.create_pr.outputs.pull-request-number
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ steps.create_pr.outputs.pull-request-number }}
-        run: gh pr merge "$PR_NUMBER" --auto --squash
+        run: |
+          set -euo pipefail
+          CHECK_NAME="Addon metadata checks / addon-metadata"
+          while true; do
+            bucket=$(gh pr checks "$PR_NUMBER" --json name,bucket --jq 'map(select(.name=="Addon metadata checks / addon-metadata")) | .[0].bucket // ""')
+            case "$bucket" in
+              pass)
+                break
+                ;;
+              fail|cancel|skipping)
+                printf 'Check "%s" completed with status: %s\n' "$CHECK_NAME" "$bucket"
+                exit 1
+                ;;
+              *)
+                sleep 5
+                ;;
+            esac
+          done
+
+      - name: Merge pull request
+        if: steps.update.outputs.changed == 'true' && steps.create_pr.outputs.pull-request-number
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.create_pr.outputs.pull-request-number }}
+        run: gh pr merge "$PR_NUMBER" --squash --delete-branch

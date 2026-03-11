@@ -1,0 +1,88 @@
+name: Validate add-on metadata
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  addon-metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install PyYAML
+        run: python3 -m pip install PyYAML
+
+      - name: Validate add-on metadata
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+          import sys
+          import yaml
+
+          errors = []
+
+          def load_yaml(path: Path):
+              try:
+                  return yaml.safe_load(path.read_text(encoding="utf-8"))
+              except Exception as exc:
+                  errors.append(f"{path}: invalid YAML ({exc})")
+                  return None
+
+          repository = Path("repository.yaml")
+          if repository.is_file():
+              load_yaml(repository)
+          else:
+              errors.append("repository.yaml: missing")
+
+          version_re = re.compile(r"^\d+\.\d+\.\d+-\d+$")
+          tag_re = re.compile(r"^v?\d+\.\d+\.\d+$")
+
+          addon_dirs = sorted(
+              path for path in Path(".").iterdir()
+              if path.is_dir() and (path / "config.yaml").is_file()
+          )
+
+          for addon_dir in addon_dirs:
+              config_path = addon_dir / "config.yaml"
+              build_path = addon_dir / "build.yaml"
+              config = load_yaml(config_path)
+              if build_path.is_file():
+                  build = load_yaml(build_path)
+              else:
+                  errors.append(f"{build_path}: missing build.yaml")
+                  build = None
+
+              if config is not None:
+                  version = config.get("version")
+                  if not isinstance(version, str) or not version_re.match(version):
+                      errors.append(
+                          f"{config_path}: version '{version}' does not match {version_re.pattern}"
+                      )
+
+              if build is not None:
+                  build_from = build.get("build_from")
+                  if not isinstance(build_from, dict) or not build_from:
+                      errors.append(f"{build_path}: build_from missing or not a map")
+                  else:
+                      for arch, image in build_from.items():
+                          if not isinstance(image, str) or ":" not in image:
+                              errors.append(
+                                  f"{build_path}: build_from {arch} value '{image}' is invalid"
+                              )
+                              continue
+                          tag = image.rsplit(":", 1)[1]
+                          if not tag_re.match(tag):
+                              errors.append(
+                                  f"{build_path}: build_from {arch} tag '{tag}' does not match {tag_re.pattern}"
+                              )
+
+          if errors:
+              for error in errors:
+                  print(error)
+              sys.exit(1)
+
+          print("Addon metadata validation passed.")
+          PY
