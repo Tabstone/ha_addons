@@ -6,10 +6,10 @@ Thin Home Assistant wrapper around `ghcr.io/metacubex/metacubexd`.
 
 This UI add-on reads the Mihomo config directory from the main add-on:
 
-- Host: `/addon_configs/9d486770_mihomo/config`
+- Host: `/addon_configs/<实际 add-on slug>/config`
 - Container: `/config/caddy` (symlink)
 
-Home Assistant prefixes add-on slugs with the repository ID (for example, `9d486770_`). If your install uses a different prefix, replace it in the path above.
+Home Assistant prefixes add-on slugs with the repository ID (for example, `9d486770_`). Replace `<实际 add-on slug>` with the full slug shown in your Home Assistant add-on list.
 
 ## Access
 

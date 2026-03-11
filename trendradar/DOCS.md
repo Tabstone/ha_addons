@@ -6,10 +6,10 @@ Thin Home Assistant wrapper around `wantcat/trendradar`.
 
 This add-on keeps config and output as sibling directories inside the same public add-on folder:
 
-- Config: `/addon_configs/9d486770_trendradar/config`
-- Output: `/addon_configs/9d486770_trendradar/output`
+- Config: `/addon_configs/<实际 add-on slug>/config`
+- Output: `/addon_configs/<实际 add-on slug>/output`
 
-Home Assistant prefixes add-on slugs with the repository ID (for example, `9d486770_`). If your install uses a different prefix, replace it in the paths above.
+Home Assistant prefixes add-on slugs with the repository ID (for example, `9d486770_`). Replace `<实际 add-on slug>` with the full slug shown in your Home Assistant add-on list.
 
 Inside the container they are exposed as:
 

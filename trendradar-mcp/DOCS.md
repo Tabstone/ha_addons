@@ -6,10 +6,10 @@ Thin Home Assistant wrapper around `wantcat/trendradar-mcp`.
 
 This add-on does **not** maintain its own TrendRadar dataset. It reuses the main add-on shared directories:
 
-- Shared config: `/addon_configs/9d486770_trendradar/config`
-- Shared output: `/addon_configs/9d486770_trendradar/output`
+- Shared config: `/addon_configs/<实际 add-on slug>/config`
+- Shared output: `/addon_configs/<实际 add-on slug>/output`
 
-Home Assistant prefixes add-on slugs with the repository ID (for example, `9d486770_`). If your install uses a different prefix, replace it in the paths above.
+Home Assistant prefixes add-on slugs with the repository ID (for example, `9d486770_`). Replace `<实际 add-on slug>` with the full slug shown in your Home Assistant add-on list.
 
 Inside the container they are exposed as:
 
