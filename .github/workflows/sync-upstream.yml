@@ -193,7 +193,7 @@ jobs:
           set -euo pipefail
           CHECK_NAME="addon-metadata"
           while true; do
-            bucket=$(gh pr checks "$PR_NUMBER" --json name,bucket --jq 'map(select(.name=="addon-metadata")) | .[0].bucket // ""')
+            bucket=$(gh pr checks "$PR_NUMBER" --json name,bucket --jq 'map(select(.name=="addon-metadata")) | .[0].bucket // ""' || true)
             case "$bucket" in
               pass)
                 break
