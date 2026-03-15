@@ -14,6 +14,9 @@ concurrency:
   group: sync-upstream
   cancel-in-progress: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -188,9 +191,9 @@ jobs:
           PR_NUMBER: ${{ steps.create_pr.outputs.pull-request-number }}
         run: |
           set -euo pipefail
-          CHECK_NAME="Addon metadata checks / addon-metadata"
+          CHECK_NAME="addon-metadata"
           while true; do
-            bucket=$(gh pr checks "$PR_NUMBER" --json name,bucket --jq 'map(select(.name=="Addon metadata checks / addon-metadata")) | .[0].bucket // ""')
+            bucket=$(gh pr checks "$PR_NUMBER" --json name,bucket --jq 'map(select(.name=="addon-metadata")) | .[0].bucket // ""')
             case "$bucket" in
               pass)
                 break
