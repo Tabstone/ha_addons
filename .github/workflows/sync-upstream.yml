@@ -203,8 +203,8 @@ jobs:
       - name: Wait for addon metadata check
         if: steps.update.outputs.changed == 'true' && steps.create_pr.outputs.pull-request-number
         env:
-          GH_TOKEN: ${{ secrets.PAT }}
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ steps.create_pr.outputs.pull-request-number }}
         run: |
           set -euo pipefail
