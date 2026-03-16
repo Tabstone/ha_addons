@@ -184,6 +184,21 @@ jobs:
             - update wrapper addon versions
             - append changelog entries
 
+      - name: Dispatch addon metadata workflow
+        if: steps.update.outputs.changed == 'true' && steps.create_pr.outputs.pull-request-number
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+          PR_NUMBER: ${{ steps.create_pr.outputs.pull-request-number }}
+        run: |
+          set -euo pipefail
+          PR_BRANCH=$(gh pr view "$PR_NUMBER" --json headRefName --jq .headRefName)
+          if [ -z "$PR_BRANCH" ]; then
+            printf 'Unable to resolve PR head branch for PR %s.\n' "$PR_NUMBER"
+            exit 1
+          fi
+          gh workflow run addon-metadata.yml --ref "$PR_BRANCH"
+
       - name: Wait for addon metadata check
         if: steps.update.outputs.changed == 'true' && steps.create_pr.outputs.pull-request-number
         env:
@@ -193,6 +208,9 @@ jobs:
         run: |
           set -euo pipefail
           CHECK_NAME="addon-metadata"
+          TIMEOUT_SECONDS=900
+          start_time=$(date +%s)
+          seen_check=false
           while true; do
             if ! output=$(gh pr checks "$PR_NUMBER" --json name,bucket --jq 'map(select(.name=="addon-metadata")) | .[0].bucket // ""' 2>&1); then
               case "$output" in
@@ -205,6 +223,17 @@ jobs:
             else
               bucket="$output"
             fi
+            if [ -n "$bucket" ]; then
+              seen_check=true
+            else
+              elapsed=$(( $(date +%s) - start_time ))
+              if [ "$elapsed" -ge "$TIMEOUT_SECONDS" ] && [ "$seen_check" = "false" ]; then
+                printf 'Timed out after %s seconds waiting for check "%s" to appear.\n' "$TIMEOUT_SECONDS" "$CHECK_NAME"
+                exit 1
+              fi
+              sleep 5
+              continue
+            fi
             case "$bucket" in
               pass)
                 break
@@ -214,6 +243,11 @@ jobs:
                 exit 1
                 ;;
               *)
+                elapsed=$(( $(date +%s) - start_time ))
+                if [ "$elapsed" -ge "$TIMEOUT_SECONDS" ]; then
+                  printf 'Timed out after %s seconds waiting for check "%s" to complete.\n' "$TIMEOUT_SECONDS" "$CHECK_NAME"
+                  exit 1
+                fi
                 sleep 5
                 ;;
             esac
