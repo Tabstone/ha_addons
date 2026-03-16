@@ -200,33 +200,36 @@ jobs:
           fi
           gh workflow run addon-metadata.yml --ref "$PR_BRANCH"
 
-      - name: Wait for addon metadata check
+      - name: Wait for addon metadata workflow
         if: steps.update.outputs.changed == 'true' && steps.create_pr.outputs.pull-request-number
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
           PR_NUMBER: ${{ steps.create_pr.outputs.pull-request-number }}
         run: |
           set -euo pipefail
-          CHECK_NAME="addon-metadata"
+          WORKFLOW_NAME="addon-metadata.yml"
           TIMEOUT_SECONDS=900
           start_time=$(date +%s)
+
+          PR_BRANCH=$(gh pr view "$PR_NUMBER" --json headRefName --jq .headRefName)
+          if [ -z "$PR_BRANCH" ]; then
+            printf 'Unable to resolve PR head branch for PR %s.\n' "$PR_NUMBER"
+            exit 1
+          fi
+
           while true; do
-            if ! head_sha=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" --jq .head.sha 2>&1); then
-              printf 'Failed to fetch PR head SHA: %s\n' "$head_sha"
+            if ! run_json=$(gh run list --workflow "$WORKFLOW_NAME" --branch "$PR_BRANCH" --limit 1 --json status,conclusion,createdAt 2>&1); then
+              printf 'Failed to list workflow runs: %s\n' "$run_json"
               exit 1
             fi
-            if ! check_json=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${head_sha}/check-runs" -H "Accept: application/vnd.github+json" 2>&1); then
-              printf 'Failed to fetch check runs: %s\n' "$check_json"
-              exit 1
-            fi
-            status=$(echo "$check_json" | python3 -c "import json,sys; data=json.load(sys.stdin); runs=[r for r in data.get('check_runs',[]) if r.get('name')=='addon-metadata']; print((runs[0].get('status') if runs else ''))")
-            conclusion=$(echo "$check_json" | python3 -c "import json,sys; data=json.load(sys.stdin); runs=[r for r in data.get('check_runs',[]) if r.get('name')=='addon-metadata']; print((runs[0].get('conclusion') if runs else ''))")
+            status=$(echo "$run_json" | python3 -c "import json,sys; data=json.load(sys.stdin); run=data[0] if data else {}; print(run.get('status',''))")
+            conclusion=$(echo "$run_json" | python3 -c "import json,sys; data=json.load(sys.stdin); run=data[0] if data else {}; print(run.get('conclusion',''))")
 
             if [ -z "$status" ]; then
               elapsed=$(( $(date +%s) - start_time ))
               if [ "$elapsed" -ge "$TIMEOUT_SECONDS" ]; then
-                printf 'Timed out after %s seconds waiting for check "%s" to appear.\n' "$TIMEOUT_SECONDS" "$CHECK_NAME"
+                printf 'Timed out after %s seconds waiting for workflow "%s" to appear.\n' "$TIMEOUT_SECONDS" "$WORKFLOW_NAME"
                 exit 1
               fi
               sleep 5
@@ -237,13 +240,13 @@ jobs:
               if [ "$conclusion" = "success" ]; then
                 break
               fi
-              printf 'Check "%s" completed with conclusion: %s\n' "$CHECK_NAME" "$conclusion"
+              printf 'Workflow "%s" completed with conclusion: %s\n' "$WORKFLOW_NAME" "$conclusion"
               exit 1
             fi
 
             elapsed=$(( $(date +%s) - start_time ))
             if [ "$elapsed" -ge "$TIMEOUT_SECONDS" ]; then
-              printf 'Timed out after %s seconds waiting for check "%s" to complete.\n' "$TIMEOUT_SECONDS" "$CHECK_NAME"
+              printf 'Timed out after %s seconds waiting for workflow "%s" to complete.\n' "$TIMEOUT_SECONDS" "$WORKFLOW_NAME"
               exit 1
             fi
             sleep 5
