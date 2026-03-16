@@ -203,56 +203,50 @@ jobs:
       - name: Wait for addon metadata check
         if: steps.update.outputs.changed == 'true' && steps.create_pr.outputs.pull-request-number
         env:
-          GH_TOKEN: ${{ secrets.PAT }}
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ steps.create_pr.outputs.pull-request-number }}
         run: |
           set -euo pipefail
           CHECK_NAME="addon-metadata"
           TIMEOUT_SECONDS=900
           start_time=$(date +%s)
-          seen_check=false
           while true; do
-            if ! output=$(gh pr checks "$PR_NUMBER" --json name,bucket --jq 'map(select(.name=="addon-metadata")) | .[0].bucket // ""' 2>&1); then
-              case "$output" in
-                *"Resource not accessible by integration"*)
-                  printf 'Authentication failed while querying PR checks: %s\n' "$output"
-                  exit 1
-                  ;;
-              esac
-              bucket=""
-            else
-              bucket="$output"
+            if ! head_sha=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" --jq .head.sha 2>&1); then
+              printf 'Failed to fetch PR head SHA: %s\n' "$head_sha"
+              exit 1
             fi
-            bucket=$(echo "$bucket" | tr -d '\r\n')
-            if [ -n "$bucket" ]; then
-              seen_check=true
-            else
+            if ! check_json=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${head_sha}/check-runs" -H "Accept: application/vnd.github+json" 2>&1); then
+              printf 'Failed to fetch check runs: %s\n' "$check_json"
+              exit 1
+            fi
+            status=$(echo "$check_json" | python3 -c "import json,sys; data=json.load(sys.stdin); runs=[r for r in data.get('check_runs',[]) if r.get('name')=='addon-metadata']; print((runs[0].get('status') if runs else ''))")
+            conclusion=$(echo "$check_json" | python3 -c "import json,sys; data=json.load(sys.stdin); runs=[r for r in data.get('check_runs',[]) if r.get('name')=='addon-metadata']; print((runs[0].get('conclusion') if runs else ''))")
+
+            if [ -z "$status" ]; then
               elapsed=$(( $(date +%s) - start_time ))
-              if [ "$elapsed" -ge "$TIMEOUT_SECONDS" ] && [ "$seen_check" = "false" ]; then
+              if [ "$elapsed" -ge "$TIMEOUT_SECONDS" ]; then
                 printf 'Timed out after %s seconds waiting for check "%s" to appear.\n' "$TIMEOUT_SECONDS" "$CHECK_NAME"
                 exit 1
               fi
               sleep 5
               continue
             fi
-            case "$bucket" in
-              pass)
+
+            if [ "$status" = "completed" ]; then
+              if [ "$conclusion" = "success" ]; then
                 break
-                ;;
-              fail|cancel|skipping)
-                printf 'Check "%s" completed with status: %s\n' "$CHECK_NAME" "$bucket"
-                exit 1
-                ;;
-              *)
-                elapsed=$(( $(date +%s) - start_time ))
-                if [ "$elapsed" -ge "$TIMEOUT_SECONDS" ]; then
-                  printf 'Timed out after %s seconds waiting for check "%s" to complete.\n' "$TIMEOUT_SECONDS" "$CHECK_NAME"
-                  exit 1
-                fi
-                sleep 5
-                ;;
-            esac
+              fi
+              printf 'Check "%s" completed with conclusion: %s\n' "$CHECK_NAME" "$conclusion"
+              exit 1
+            fi
+
+            elapsed=$(( $(date +%s) - start_time ))
+            if [ "$elapsed" -ge "$TIMEOUT_SECONDS" ]; then
+              printf 'Timed out after %s seconds waiting for check "%s" to complete.\n' "$TIMEOUT_SECONDS" "$CHECK_NAME"
+              exit 1
+            fi
+            sleep 5
           done
 
       - name: Merge pull request
