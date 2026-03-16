@@ -224,6 +224,7 @@ jobs:
             else
               bucket="$output"
             fi
+            bucket=$(echo "$bucket" | tr -d '\r\n')
             if [ -n "$bucket" ]; then
               seen_check=true
             else
