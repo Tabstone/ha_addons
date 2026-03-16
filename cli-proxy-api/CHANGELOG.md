@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.8.54-1
+
+- Sync upstream image to v6.8.54.
+
+
 ## 6.8.53-1
 
 - Sync upstream image to v6.8.53.
