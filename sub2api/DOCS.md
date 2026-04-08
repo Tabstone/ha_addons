@@ -1,6 +1,6 @@
 # Sub2API
 
-Sub2API 的 Home Assistant add-on 薄封装，复用上游 `ghcr.io/tabstone/sub2api` 镜像，持久化应用数据目录，并通过 add-on 配置页注入运行环境变量。
+Sub2API 的 Home Assistant add-on 薄封装，直接复用上游官方镜像 `weishaw/sub2api`，持久化应用数据目录，并通过 add-on 配置页注入运行环境变量。
 
 ## 部署形态
 
@@ -69,7 +69,6 @@ Sub2API 的 Home Assistant add-on 薄封装，复用上游 `ghcr.io/tabstone/sub
 
 ## 升级说明
 
-- 该 add-on 使用 `Tabstone/sub2api` fork 发布的 GHCR 镜像
-- fork 会自动追踪 `Wei-Shaw/sub2api` 的 release
-- 每次上游 release 发布后，fork 会自动构建新镜像
-- 镜像发布成功后会触发本仓库的版本同步 workflow，生成新的 add-on 版本
+- 该 add-on 直接使用上游官方镜像 `weishaw/sub2api`
+- 仓库级同步 workflow 会直接检查官方 Docker Hub 标签
+- 检测到新的上游版本后，会自动更新 add-on 的 `build.yaml`、`config.yaml.version` 和 `CHANGELOG.md`
