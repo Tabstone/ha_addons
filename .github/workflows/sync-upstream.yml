@@ -71,6 +71,15 @@ jobs:
           " 2>/dev/null || echo ""
           }
 
+          get_github_latest_release_tag() {
+            local repo="$1"
+            curl -fsSL "https://api.github.com/repos/${repo}/releases/latest" | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          print(data.get('tag_name', ''))
+          " 2>/dev/null || echo ""
+          }
+
           TR_TAG=$(get_dockerhub_latest "wantcat/trendradar")
           echo "trendradar_tag=$TR_TAG" >> "$GITHUB_OUTPUT"
           echo "trendradar=${TR_TAG#v}" >> "$GITHUB_OUTPUT"
@@ -91,6 +100,10 @@ jobs:
           echo "metacubexd_tag=$METACUBEXD_TAG" >> "$GITHUB_OUTPUT"
           echo "metacubexd=${METACUBEXD_TAG#v}" >> "$GITHUB_OUTPUT"
 
+          SUB2API_TAG=$(get_github_latest_release_tag "Tabstone/sub2api")
+          echo "sub2api_tag=$SUB2API_TAG" >> "$GITHUB_OUTPUT"
+          echo "sub2api=${SUB2API_TAG#v}" >> "$GITHUB_OUTPUT"
+
       - name: Update addon metadata
         id: update
         env:
@@ -104,6 +117,8 @@ jobs:
           MIHOMO_TAG: ${{ steps.upstream.outputs.mihomo_tag }}
           METACUBEXD_VERSION: ${{ steps.upstream.outputs.metacubexd }}
           METACUBEXD_TAG: ${{ steps.upstream.outputs.metacubexd_tag }}
+          SUB2API_VERSION: ${{ steps.upstream.outputs.sub2api }}
+          SUB2API_TAG: ${{ steps.upstream.outputs.sub2api_tag }}
           BUMP_WRAPPER: ${{ github.event.inputs.bump_wrapper || 'false' }}
         run: |
           python3 <<'PY'
@@ -120,6 +135,7 @@ jobs:
               ('cli-proxy-api',  'eceasy/cli-proxy-api',      'CLI_PROXY_API_VERSION',  'CLI_PROXY_API_TAG'),
               ('mihomo',         'metacubex/mihomo',          'MIHOMO_VERSION',         'MIHOMO_TAG'),
               ('metacubexd',     'ghcr.io/metacubex/metacubexd', 'METACUBEXD_VERSION',   'METACUBEXD_TAG'),
+              ('sub2api',        'ghcr.io/tabstone/sub2api',  'SUB2API_VERSION',        'SUB2API_TAG'),
           ]
           bump_wrapper = os.environ.get('BUMP_WRAPPER', 'false').lower() == 'true'
           changed = False

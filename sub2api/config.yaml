@@ -1,0 +1,68 @@
+name: Sub2API
+version: "0.1.109-1"
+slug: sub2api
+description: Sub2API standalone gateway wrapped for Home Assistant with persistent app data and external PostgreSQL and Redis configuration
+url: https://github.com/Tabstone/ha_addons/tree/main/sub2api
+arch:
+  - amd64
+  - aarch64
+init: false
+map:
+  - addon_config:rw
+ports:
+  8080/tcp: 8080
+ports_description:
+  8080/tcp: Sub2API web UI
+webui: http://[HOST]:[PORT:8080]/
+options:
+  TZ: Asia/Shanghai
+  RUN_MODE: standard
+  DATABASE_HOST: ""
+  DATABASE_PORT: 5432
+  DATABASE_USER: sub2api
+  DATABASE_PASSWORD: ""
+  DATABASE_DBNAME: sub2api
+  DATABASE_SSLMODE: disable
+  DATABASE_MAX_OPEN_CONNS: 50
+  DATABASE_MAX_IDLE_CONNS: 10
+  DATABASE_CONN_MAX_LIFETIME_MINUTES: 30
+  DATABASE_CONN_MAX_IDLE_TIME_MINUTES: 5
+  REDIS_HOST: ""
+  REDIS_PORT: 6379
+  REDIS_PASSWORD: ""
+  REDIS_DB: 0
+  REDIS_POOL_SIZE: 1024
+  REDIS_MIN_IDLE_CONNS: 10
+  REDIS_ENABLE_TLS: false
+  ADMIN_EMAIL: admin@sub2api.local
+  ADMIN_PASSWORD: ""
+  JWT_SECRET: ""
+  TOTP_ENCRYPTION_KEY: ""
+  env_vars: []
+schema:
+  TZ: str?
+  RUN_MODE: list(standard|simple)
+  DATABASE_HOST: str
+  DATABASE_PORT: int
+  DATABASE_USER: str
+  DATABASE_PASSWORD: password
+  DATABASE_DBNAME: str
+  DATABASE_SSLMODE: str
+  DATABASE_MAX_OPEN_CONNS: int
+  DATABASE_MAX_IDLE_CONNS: int
+  DATABASE_CONN_MAX_LIFETIME_MINUTES: int
+  DATABASE_CONN_MAX_IDLE_TIME_MINUTES: int
+  REDIS_HOST: str
+  REDIS_PORT: int
+  REDIS_PASSWORD: password?
+  REDIS_DB: int
+  REDIS_POOL_SIZE: int
+  REDIS_MIN_IDLE_CONNS: int
+  REDIS_ENABLE_TLS: bool
+  ADMIN_EMAIL: str
+  ADMIN_PASSWORD: password?
+  JWT_SECRET: password?
+  TOTP_ENCRYPTION_KEY: password?
+  env_vars:
+    - name: match(^[A-Za-z0-9_]+$)
+      value: str?
