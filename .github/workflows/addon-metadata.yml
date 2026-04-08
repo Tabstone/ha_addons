@@ -1,6 +1,9 @@
 name: Validate add-on metadata
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
   workflow_dispatch:
 
