@@ -95,6 +95,10 @@ jobs:
           echo "sub2api_tag=$SUB2API_TAG" >> "$GITHUB_OUTPUT"
           echo "sub2api=${SUB2API_TAG#v}" >> "$GITHUB_OUTPUT"
 
+          METAPI_TAG=$(get_dockerhub_latest "1467078763/metapi")
+          echo "metapi_tag=$METAPI_TAG" >> "$GITHUB_OUTPUT"
+          echo "metapi=${METAPI_TAG#v}" >> "$GITHUB_OUTPUT"
+
       - name: Update addon metadata
         id: update
         env:
@@ -110,6 +114,8 @@ jobs:
           METACUBEXD_TAG: ${{ steps.upstream.outputs.metacubexd_tag }}
           SUB2API_VERSION: ${{ steps.upstream.outputs.sub2api }}
           SUB2API_TAG: ${{ steps.upstream.outputs.sub2api_tag }}
+          METAPI_VERSION: ${{ steps.upstream.outputs.metapi }}
+          METAPI_TAG: ${{ steps.upstream.outputs.metapi_tag }}
           BUMP_WRAPPER: ${{ github.event.inputs.bump_wrapper || 'false' }}
         run: |
           python3 <<'PY'
@@ -127,6 +133,7 @@ jobs:
               ('mihomo',         'metacubex/mihomo',          'MIHOMO_VERSION',         'MIHOMO_TAG'),
               ('metacubexd',     'ghcr.io/metacubex/metacubexd', 'METACUBEXD_VERSION',   'METACUBEXD_TAG'),
               ('sub2api',        'weishaw/sub2api',           'SUB2API_VERSION',        'SUB2API_TAG'),
+              ('metapi',         '1467078763/metapi',         'METAPI_VERSION',         'METAPI_TAG'),
           ]
           bump_wrapper = os.environ.get('BUMP_WRAPPER', 'false').lower() == 'true'
           changed = False
