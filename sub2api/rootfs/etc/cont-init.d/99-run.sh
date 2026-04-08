@@ -108,5 +108,5 @@ jq -r '
       "JWT_SECRET",
       "TOTP_ENCRYPTION_KEY"
     ] | index($name)) | not)
-  | "export \($name)=\((.value // \"\") | tostring | @sh)"
+  | "export \($name)=\((.value // "") | tostring | @sh)"
 ' "$OPTIONS_FILE" >> "$ENV_FILE"
