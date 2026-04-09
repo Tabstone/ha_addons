@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.110-1
+
+- Sync upstream image to 0.1.110.
+
+
 ## 0.1.109-3
 
 - Fix `jq` quoting in `env_vars` export generation so the add-on can start correctly.
