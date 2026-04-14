@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.112-1
+
+- Sync upstream image to 0.1.112.
+
+
 ## 0.1.111-1
 
 - Sync upstream image to 0.1.111.

@@ -1,5 +1,5 @@
 name: Sub2API
-version: "0.1.111-1"
+version: "0.1.112-1"
 slug: sub2api
 description: Sub2API standalone gateway wrapped for Home Assistant with persistent app data and external PostgreSQL and Redis configuration
 url: https://github.com/Tabstone/ha_addons/tree/main/sub2api
