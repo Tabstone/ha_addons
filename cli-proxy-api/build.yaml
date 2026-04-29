@@ -1,3 +1,3 @@
 build_from:
-  amd64: eceasy/cli-proxy-api:v6.9.40
-  aarch64: eceasy/cli-proxy-api:v6.9.40
+  amd64: eceasy/cli-proxy-api:v6.9.41
+  aarch64: eceasy/cli-proxy-api:v6.9.41
