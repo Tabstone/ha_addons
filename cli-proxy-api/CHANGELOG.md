@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.10.1-1
+
+- Sync upstream image to v6.10.1.
+
+
 ## 6.10.0-1
 
 - Sync upstream image to v6.10.0.
