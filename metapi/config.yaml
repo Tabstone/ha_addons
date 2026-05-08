@@ -1,5 +1,5 @@
 name: Metapi
-version: "1.3.0-1"
+version: "sha-1"
 slug: metapi
 description: Metapi upstream image wrapped for Home Assistant with persistent app data
 url: https://github.com/Tabstone/ha_addons/tree/main/metapi
