@@ -1,5 +1,5 @@
 name: TrendRadar MCP
-version: "4.0.0-3"
+version: "4.0.4-1"
 slug: trendradar-mcp
 description: TrendRadar MCP server sharing the main TrendRadar config and output directories
 url: https://github.com/Tabstone/ha_addons/tree/main/trendradar-mcp
