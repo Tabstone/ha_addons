@@ -1,0 +1,4 @@
+build_from:
+  amd64: 1467078763/metapi:v1.3.0
+  aarch64: 1467078763/metapi:v1.3.0
+  armv7: 1467078763/metapi:v1.3.0

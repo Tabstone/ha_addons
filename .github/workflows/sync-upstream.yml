@@ -31,53 +31,17 @@ jobs:
       - name: Fetch upstream versions from Docker Hub
         id: upstream
         run: |
-          # Generic function: poll Docker Hub for latest versioned tag
+          # Poll upstream registries for the latest full semver tag.
+          # Ignore rolling sha-* tags because add-on metadata validation only
+          # allows image tags like v1.2.3 and config versions like 1.2.3-1.
           get_dockerhub_latest() {
             local repo="$1"
-            curl -fsSL "https://hub.docker.com/v2/repositories/${repo}/tags/?page_size=50&ordering=last_updated" | python3 -c "
-          import sys, json, re
-          data = json.load(sys.stdin)
-          tags = [r['name'] for r in data.get('results', []) if r['name'] not in ('latest', 'dev', 'nightly', 'beta')]
-
-          def parse_full(tag):
-            m = re.match(r'^v?(\d+)\.(\d+)\.(\d+)$', tag)
-            return (int(m.group(1)), int(m.group(2)), int(m.group(3))) if m else None
-
-          def parse_partial(tag):
-            m = re.match(r'^v?(\d+)\.(\d+)$', tag)
-            return (int(m.group(1)), int(m.group(2)), 0) if m else None
-
-          full = [(parse_full(t), t) for t in tags if parse_full(t)]
-          if full:
-            print(max(full, key=lambda item: item[0])[1])
-            raise SystemExit(0)
-
-          partial = [(parse_partial(t), t) for t in tags if parse_partial(t)]
-          if partial:
-            print(max(partial, key=lambda item: item[0])[1])
-            raise SystemExit(0)
-
-          print(tags[0] if tags else '')
-          " 2>/dev/null || echo ""
+            python3 .github/scripts/sync_upstream.py dockerhub-latest "$repo"
           }
 
-          # GitHub tags (GHCR often requires auth, use repo tags)
           get_github_latest_tag() {
             local repo="$1"
-            curl -fsSL "https://api.github.com/repos/${repo}/tags?per_page=100" | python3 -c "
-          import sys, json
-          data = json.load(sys.stdin)
-          print(data[0]['name'] if data else '')
-          " 2>/dev/null || echo ""
-          }
-
-          get_github_latest_release_tag() {
-            local repo="$1"
-            curl -fsSL "https://api.github.com/repos/${repo}/releases/latest" | python3 -c "
-          import sys, json
-          data = json.load(sys.stdin)
-          print(data.get('tag_name', ''))
-          " 2>/dev/null || echo ""
+            python3 .github/scripts/sync_upstream.py github-latest-tag "$repo"
           }
 
           TR_TAG=$(get_dockerhub_latest "wantcat/trendradar")
@@ -100,9 +64,13 @@ jobs:
           echo "metacubexd_tag=$METACUBEXD_TAG" >> "$GITHUB_OUTPUT"
           echo "metacubexd=${METACUBEXD_TAG#v}" >> "$GITHUB_OUTPUT"
 
-          SUB2API_TAG=$(get_github_latest_release_tag "Tabstone/sub2api")
+          SUB2API_TAG=$(get_dockerhub_latest "weishaw/sub2api")
           echo "sub2api_tag=$SUB2API_TAG" >> "$GITHUB_OUTPUT"
           echo "sub2api=${SUB2API_TAG#v}" >> "$GITHUB_OUTPUT"
+
+          METAPI_TAG=$(get_dockerhub_latest "1467078763/metapi")
+          echo "metapi_tag=$METAPI_TAG" >> "$GITHUB_OUTPUT"
+          echo "metapi=${METAPI_TAG#v}" >> "$GITHUB_OUTPUT"
 
       - name: Update addon metadata
         id: update
@@ -119,6 +87,8 @@ jobs:
           METACUBEXD_TAG: ${{ steps.upstream.outputs.metacubexd_tag }}
           SUB2API_VERSION: ${{ steps.upstream.outputs.sub2api }}
           SUB2API_TAG: ${{ steps.upstream.outputs.sub2api_tag }}
+          METAPI_VERSION: ${{ steps.upstream.outputs.metapi }}
+          METAPI_TAG: ${{ steps.upstream.outputs.metapi_tag }}
           BUMP_WRAPPER: ${{ github.event.inputs.bump_wrapper || 'false' }}
         run: |
           python3 <<'PY'
@@ -135,7 +105,8 @@ jobs:
               ('cli-proxy-api',  'eceasy/cli-proxy-api',      'CLI_PROXY_API_VERSION',  'CLI_PROXY_API_TAG'),
               ('mihomo',         'metacubex/mihomo',          'MIHOMO_VERSION',         'MIHOMO_TAG'),
               ('metacubexd',     'ghcr.io/metacubex/metacubexd', 'METACUBEXD_VERSION',   'METACUBEXD_TAG'),
-              ('sub2api',        'ghcr.io/tabstone/sub2api',  'SUB2API_VERSION',        'SUB2API_TAG'),
+              ('sub2api',        'weishaw/sub2api',           'SUB2API_VERSION',        'SUB2API_TAG'),
+              ('metapi',         '1467078763/metapi',         'METAPI_VERSION',         'METAPI_TAG'),
           ]
           bump_wrapper = os.environ.get('BUMP_WRAPPER', 'false').lower() == 'true'
           changed = False
