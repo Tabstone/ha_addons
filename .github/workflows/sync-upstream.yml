@@ -83,6 +83,10 @@ jobs:
           echo "cli_proxy_api_tag=$CLI_TAG" >> "$GITHUB_OUTPUT"
           echo "cli_proxy_api=${CLI_TAG#v}" >> "$GITHUB_OUTPUT"
 
+          CPA_MANAGER_TAG=$(get_dockerhub_latest "seakee/cpa-manager")
+          echo "cpa_manager_tag=$CPA_MANAGER_TAG" >> "$GITHUB_OUTPUT"
+          echo "cpa_manager=${CPA_MANAGER_TAG#v}" >> "$GITHUB_OUTPUT"
+
           MIHOMO_TAG=$(get_dockerhub_latest "metacubex/mihomo")
           echo "mihomo_tag=$MIHOMO_TAG" >> "$GITHUB_OUTPUT"
           echo "mihomo=${MIHOMO_TAG#v}" >> "$GITHUB_OUTPUT"
@@ -108,6 +112,8 @@ jobs:
           TRENDRADAR_MCP_TAG: ${{ steps.upstream.outputs.trendradar_mcp_tag }}
           CLI_PROXY_API_VERSION: ${{ steps.upstream.outputs.cli_proxy_api }}
           CLI_PROXY_API_TAG: ${{ steps.upstream.outputs.cli_proxy_api_tag }}
+          CPA_MANAGER_VERSION: ${{ steps.upstream.outputs.cpa_manager }}
+          CPA_MANAGER_TAG: ${{ steps.upstream.outputs.cpa_manager_tag }}
           MIHOMO_VERSION: ${{ steps.upstream.outputs.mihomo }}
           MIHOMO_TAG: ${{ steps.upstream.outputs.mihomo_tag }}
           METACUBEXD_VERSION: ${{ steps.upstream.outputs.metacubexd }}
@@ -129,6 +135,7 @@ jobs:
           updates = [
               ('trendradar',     'wantcat/trendradar',        'TRENDRADAR_VERSION',     'TRENDRADAR_TAG'),
               ('trendradar-mcp', 'wantcat/trendradar-mcp',    'TRENDRADAR_MCP_VERSION', 'TRENDRADAR_MCP_TAG'),
+              ('cpa-manager',    'seakee/cpa-manager',        'CPA_MANAGER_VERSION',    'CPA_MANAGER_TAG'),
               ('cli-proxy-api',  'eceasy/cli-proxy-api',      'CLI_PROXY_API_VERSION',  'CLI_PROXY_API_TAG'),
               ('mihomo',         'metacubex/mihomo',          'MIHOMO_VERSION',         'MIHOMO_TAG'),
               ('metacubexd',     'ghcr.io/metacubex/metacubexd', 'METACUBEXD_VERSION',   'METACUBEXD_TAG'),

@@ -1,0 +1,3 @@
+build_from:
+  amd64: seakee/cpa-manager:v1.1.9
+  aarch64: seakee/cpa-manager:v1.1.9

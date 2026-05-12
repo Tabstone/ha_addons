@@ -1,0 +1,35 @@
+name: CPA Manager
+version: "1.1.9-1"
+slug: cpa-manager
+description: CPA Manager usage service wrapped for Home Assistant with persistent SQLite data
+url: https://github.com/Tabstone/ha_addons/tree/main/cpa-manager
+arch:
+  - amd64
+  - aarch64
+init: false
+ingress: true
+ingress_port: 18317
+ingress_entry: /management.html
+map:
+  - addon_config:rw
+ports:
+  18317/tcp: 18317
+ports_description:
+  18317/tcp: CPA Manager web UI
+webui: http://[HOST]:[PORT:18317]/management.html
+options:
+  TZ: Asia/Shanghai
+  CPA_UPSTREAM_URL: ""
+  CPA_MANAGEMENT_KEY: ""
+  USAGE_COLLECTOR_MODE: auto
+  USAGE_CORS_ORIGINS: "*"
+  env_vars: []
+schema:
+  TZ: str?
+  CPA_UPSTREAM_URL: str?
+  CPA_MANAGEMENT_KEY: password?
+  USAGE_COLLECTOR_MODE: list(auto|http|resp)
+  USAGE_CORS_ORIGINS: str?
+  env_vars:
+    - name: match(^[A-Za-z0-9_]+$)
+      value: str?
