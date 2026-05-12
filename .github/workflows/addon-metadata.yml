@@ -43,8 +43,8 @@ jobs:
           else:
               errors.append("repository.yaml: missing")
 
-          version_re = re.compile(r"^\d+\.\d+\.\d+-\d+$")
-          tag_re = re.compile(r"^v?\d+\.\d+\.\d+$")
+          version_re = re.compile(r"^(?:\d+\.\d+\.\d+-\d+|sha-\d+)$")
+          tag_re = re.compile(r"^(?:v?\d+\.\d+\.\d+|sha-[0-9a-f]{7,40})$")
 
           addon_dirs = sorted(
               path for path in Path(".").iterdir()
