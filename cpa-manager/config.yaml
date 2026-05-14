@@ -1,5 +1,5 @@
 name: CPA Manager
-version: "1.1.9-1"
+version: "1.2.1-1"
 slug: cpa-manager
 description: CPA Manager usage service wrapped for Home Assistant with persistent SQLite data
 url: https://github.com/Tabstone/ha_addons/tree/main/cpa-manager
