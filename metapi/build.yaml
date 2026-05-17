@@ -1,4 +1,4 @@
 build_from:
-  amd64: 1467078763/metapi:sha-cdb12a9
-  aarch64: 1467078763/metapi:sha-cdb12a9
-  armv7: 1467078763/metapi:sha-cdb12a9
+  amd64: 1467078763/metapi:sha-c308a3e
+  aarch64: 1467078763/metapi:sha-c308a3e
+  armv7: 1467078763/metapi:sha-c308a3e
