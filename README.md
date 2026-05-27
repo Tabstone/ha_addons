@@ -11,6 +11,7 @@
 | TrendRadar | `trendradar/` | 趋势分析服务，提供 Web UI 与通知能力 | 公开源码地址暂未确认，当前直接跟随镜像源 | [wantcat/trendradar](https://hub.docker.com/r/wantcat/trendradar) |
 | TrendRadar MCP | `trendradar-mcp/` | TrendRadar 的 MCP 服务，复用主 add-on 数据 | 公开源码地址暂未确认，当前直接跟随镜像源 | [wantcat/trendradar-mcp](https://hub.docker.com/r/wantcat/trendradar-mcp) |
 | CLI Proxy API | `cli-proxy-api/` | CLI Proxy API 服务，保留配置与鉴权目录 | 公开源码地址暂未确认，当前直接跟随镜像源 | [eceasy/cli-proxy-api](https://hub.docker.com/r/eceasy/cli-proxy-api) |
+| AxonHub | `axonhub/` | AI 网关与模型代理平台，默认 SQLite 单容器封装 | [looplj/axonhub](https://github.com/looplj/axonhub) | [looplj/axonhub](https://hub.docker.com/r/looplj/axonhub) |
 | Mihomo | `mihomo/` | Mihomo 核心，保留配置目录并映射宿主网络能力 | [MetaCubeX/mihomo](https://github.com/MetaCubeX/mihomo) | [metacubex/mihomo](https://hub.docker.com/r/metacubex/mihomo) |
 | MetaCubeXD | `metacubexd/` | Mihomo 的 Web UI | [MetaCubeX/metacubexd](https://github.com/MetaCubeX/metacubexd) | [ghcr.io/metacubex/metacubexd](https://github.com/MetaCubeX/metacubexd/pkgs/container/metacubexd) |
 | Metapi | `metapi/` | Metapi AI API 聚合管理与统一代理，默认持久化 SQLite 数据目录 | [cita-777/metapi](https://github.com/cita-777/metapi) | [1467078763/metapi](https://hub.docker.com/r/1467078763/metapi) |

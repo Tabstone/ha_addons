@@ -1,0 +1,40 @@
+name: AxonHub
+version: "0.9.43-1"
+slug: axonhub
+description: AxonHub AI gateway wrapped for Home Assistant with persistent SQLite data
+url: https://github.com/Tabstone/ha_addons/tree/main/axonhub
+arch:
+  - amd64
+  - aarch64
+init: false
+map:
+  - addon_config:rw
+ports:
+  8090/tcp: 8090
+ports_description:
+  8090/tcp: AxonHub web UI and API
+webui: http://[HOST]:[PORT:8090]/
+options:
+  TZ: Asia/Shanghai
+  AXONHUB_SERVER_HOST: 0.0.0.0
+  AXONHUB_SERVER_PORT: 8090
+  AXONHUB_DB_DIALECT: sqlite3
+  AXONHUB_DB_DSN: "file:/config/data/axonhub.db?cache=shared&_fk=1&_pragma=journal_mode(WAL)"
+  AXONHUB_LOG_OUTPUT: stdio
+  AXONHUB_LOG_FILE_PATH: /config/logs/axonhub.log
+  AXONHUB_SERVER_DISABLE_SSL_VERIFY: false
+  AXONHUB_SERVER_API_AUTH_ALLOW_NO_AUTH: false
+  env_vars: []
+schema:
+  TZ: str?
+  AXONHUB_SERVER_HOST: str
+  AXONHUB_SERVER_PORT: int
+  AXONHUB_DB_DIALECT: list(sqlite3|postgres|mysql)
+  AXONHUB_DB_DSN: str
+  AXONHUB_LOG_OUTPUT: list(stdio|file)
+  AXONHUB_LOG_FILE_PATH: str?
+  AXONHUB_SERVER_DISABLE_SSL_VERIFY: bool
+  AXONHUB_SERVER_API_AUTH_ALLOW_NO_AUTH: bool
+  env_vars:
+    - name: match(^[A-Za-z0-9_]+$)
+      value: str?

@@ -1,0 +1,89 @@
+# AxonHub default configuration for the Home Assistant add-on.
+# Environment variables generated from the add-on options override these values.
+
+server:
+  host: "0.0.0.0"
+  port: 8090
+  name: "AxonHub"
+  base_path: ""
+  request_timeout: "30s"
+  llm_request_timeout: "600s"
+  debug: false
+  disable_ssl_verify: false
+  cors:
+    enabled: true
+    allowed_origins:
+      - "*"
+    allowed_methods:
+      - "GET"
+      - "POST"
+      - "DELETE"
+      - "PATCH"
+      - "PUT"
+      - "OPTIONS"
+      - "HEAD"
+    allowed_headers:
+      - "Content-Type"
+      - "Authorization"
+      - "X-API-Key"
+      - "X-Goog-Api-Key"
+      - "X-Project-ID"
+      - "AH-Thread-Id"
+      - "AH-Trace-Id"
+    exposed_headers: []
+    allow_credentials: true
+    max_age: "1m"
+  api:
+    auth:
+      allow_no_auth: false
+      key_prefix: "ah"
+
+db:
+  dialect: "sqlite3"
+  dsn: "file:/config/data/axonhub.db?cache=shared&_fk=1&_pragma=journal_mode(WAL)"
+  disable_sqlite_auto_wal: false
+  debug: false
+  max_open_conns: 20
+  max_idle_conns: 10
+  conn_max_lifetime: "30m"
+  conn_max_idle_time: "10m"
+
+cache:
+  mode: "memory"
+  memory:
+    expiration: "5s"
+    cleanup_interval: "10m"
+  redis:
+    addr: ""
+    url: ""
+    username: ""
+    password: ""
+    db: 0
+    tls: false
+    tls_insecure_skip_verify: false
+    expiration: "30m"
+
+log:
+  name: "axonhub"
+  debug: false
+  level: "info"
+  encoding: "json"
+  output: "stdio"
+  file:
+    path: "/config/logs/axonhub.log"
+    max_size: 100
+    max_age: 30
+    max_backups: 10
+    local_time: true
+
+metrics:
+  enabled: false
+
+gc:
+  cron: "0 2 * * *"
+  vacuum_enabled: false
+  vacuum_full: false
+
+provider_quota:
+  check_interval: "5m"
+  warning_check_interval_ratio: 4

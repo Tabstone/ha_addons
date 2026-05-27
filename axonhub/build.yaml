@@ -1,0 +1,3 @@
+build_from:
+  amd64: looplj/axonhub:v0.9.43
+  aarch64: looplj/axonhub:v0.9.43
