@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.8.1-1
+
+- Sync upstream image to 6.8.1.
+
+
 ## 6.8.0-1
 
 - Sync upstream image to 6.8.0.
