@@ -1,0 +1,3 @@
+build_from:
+  amd64: ghcr.io/hjdhnx/drpy-node:1.4.5
+  aarch64: ghcr.io/hjdhnx/drpy-node:1.4.5

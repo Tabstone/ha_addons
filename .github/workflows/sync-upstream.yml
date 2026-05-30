@@ -71,6 +71,36 @@ jobs:
           " 2>/dev/null || echo ""
           }
 
+          # Public GHCR packages: use registry tag list, not GitHub Packages API.
+          get_ghcr_latest() {
+            local image="$1"
+            local token
+            token=$(curl -fsSL "https://ghcr.io/token?scope=repository:${image}:pull" | python3 -c "
+          import sys, json
+          print(json.load(sys.stdin).get('token', ''))
+          " 2>/dev/null || echo "")
+            if [ -z "$token" ]; then
+              echo ""
+              return
+            fi
+            curl -fsSL -H "Authorization: Bearer ${token}" "https://ghcr.io/v2/${image}/tags/list" | python3 -c "
+          import sys, json, re
+          data = json.load(sys.stdin)
+          tags = [t for t in data.get('tags', []) if t not in ('latest', 'main', 'dev', 'nightly', 'beta')]
+
+          def parse_full(tag):
+            m = re.match(r'^v?(\d+)\.(\d+)\.(\d+)$', tag)
+            return (int(m.group(1)), int(m.group(2)), int(m.group(3))) if m else None
+
+          full = [(parse_full(t), t) for t in tags if parse_full(t)]
+          if full:
+            print(max(full, key=lambda item: item[0])[1])
+            raise SystemExit(0)
+
+          print(tags[-1] if tags else '')
+          " 2>/dev/null || echo ""
+          }
+
           TR_TAG=$(get_dockerhub_latest "wantcat/trendradar")
           echo "trendradar_tag=$TR_TAG" >> "$GITHUB_OUTPUT"
           echo "trendradar=${TR_TAG#v}" >> "$GITHUB_OUTPUT"
@@ -90,6 +120,10 @@ jobs:
           AXONHUB_TAG=$(get_dockerhub_latest "looplj/axonhub")
           echo "axonhub_tag=$AXONHUB_TAG" >> "$GITHUB_OUTPUT"
           echo "axonhub=${AXONHUB_TAG#v}" >> "$GITHUB_OUTPUT"
+
+          DRPY_NODE_TAG=$(get_ghcr_latest "hjdhnx/drpy-node")
+          echo "drpy_node_tag=$DRPY_NODE_TAG" >> "$GITHUB_OUTPUT"
+          echo "drpy_node=${DRPY_NODE_TAG#v}" >> "$GITHUB_OUTPUT"
 
           MIHOMO_TAG=$(get_dockerhub_latest "metacubex/mihomo")
           echo "mihomo_tag=$MIHOMO_TAG" >> "$GITHUB_OUTPUT"
@@ -120,6 +154,8 @@ jobs:
           CPA_MANAGER_TAG: ${{ steps.upstream.outputs.cpa_manager_tag }}
           AXONHUB_VERSION: ${{ steps.upstream.outputs.axonhub }}
           AXONHUB_TAG: ${{ steps.upstream.outputs.axonhub_tag }}
+          DRPY_NODE_VERSION: ${{ steps.upstream.outputs.drpy_node }}
+          DRPY_NODE_TAG: ${{ steps.upstream.outputs.drpy_node_tag }}
           MIHOMO_VERSION: ${{ steps.upstream.outputs.mihomo }}
           MIHOMO_TAG: ${{ steps.upstream.outputs.mihomo_tag }}
           METACUBEXD_VERSION: ${{ steps.upstream.outputs.metacubexd }}
@@ -143,6 +179,7 @@ jobs:
               ('trendradar-mcp', 'wantcat/trendradar-mcp',    'TRENDRADAR_MCP_VERSION', 'TRENDRADAR_MCP_TAG'),
               ('cpa-manager',    'seakee/cpa-manager',        'CPA_MANAGER_VERSION',    'CPA_MANAGER_TAG'),
               ('axonhub',        'looplj/axonhub',            'AXONHUB_VERSION',        'AXONHUB_TAG'),
+              ('drpy-node',      'ghcr.io/hjdhnx/drpy-node',  'DRPY_NODE_VERSION',      'DRPY_NODE_TAG'),
               ('cli-proxy-api',  'eceasy/cli-proxy-api',      'CLI_PROXY_API_VERSION',  'CLI_PROXY_API_TAG'),
               ('mihomo',         'metacubex/mihomo',          'MIHOMO_VERSION',         'MIHOMO_TAG'),
               ('metacubexd',     'ghcr.io/metacubex/metacubexd', 'METACUBEXD_VERSION',   'METACUBEXD_TAG'),

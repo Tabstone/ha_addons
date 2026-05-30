@@ -1,0 +1,52 @@
+name: drpy-node
+version: "1.4.5-1"
+slug: drpy-node
+description: drpyS Node.js server wrapped for Home Assistant with persistent configuration and sources
+url: https://github.com/Tabstone/ha_addons/tree/main/drpy-node
+arch:
+  - amd64
+  - aarch64
+init: false
+map:
+  - addon_config:rw
+ports:
+  5757/tcp: 5757
+  57575/tcp: 57575
+ports_description:
+  5757/tcp: drpy-node web UI and HTTP API
+  57575/tcp: drpy-node websocket log service
+webui: http://[HOST]:[PORT:5757]/
+options:
+  TZ: Asia/Shanghai
+  NODE_ENV: development
+  LOG_WITH_FILE: 0
+  LOG_LEVEL: info
+  API_AUTH_NAME: admin
+  API_AUTH_CODE: drpys
+  API_PWD: dzyyds
+  COOKIE_AUTH_CODE: drpys
+  CLIPBOARD_SECURITY_CODE: drpys
+  ENABLE_TASKER: 0
+  TASKER_INTERVAL: 0
+  ENABLE_TERMINAL: 1
+  READ_ONLY_MODE: 0
+  CAT_DEBUG: 1
+  env_vars: []
+schema:
+  TZ: str?
+  NODE_ENV: list(development|production)
+  LOG_WITH_FILE: int
+  LOG_LEVEL: list(trace|debug|info|warn|error|fatal)
+  API_AUTH_NAME: str
+  API_AUTH_CODE: password
+  API_PWD: password
+  COOKIE_AUTH_CODE: password
+  CLIPBOARD_SECURITY_CODE: password
+  ENABLE_TASKER: int
+  TASKER_INTERVAL: int
+  ENABLE_TERMINAL: int
+  READ_ONLY_MODE: int
+  CAT_DEBUG: int
+  env_vars:
+    - name: match(^[A-Za-z0-9_]+$)
+      value: str?
