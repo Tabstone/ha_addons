@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.249.1-1
+
+- Sync upstream image to v1.249.1.
+
+
 ## 1.248.7-1
 
 - Sync upstream image to v1.248.7.
