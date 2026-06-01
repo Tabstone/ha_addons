@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.4-1
+
+- Sync upstream image to v1.5.4.
+
+
 ## 1.5.3-1
 
 - Sync upstream image to v1.5.3.
