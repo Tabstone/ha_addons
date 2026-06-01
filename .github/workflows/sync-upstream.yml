@@ -125,6 +125,10 @@ jobs:
           echo "drpy_node_tag=$DRPY_NODE_TAG" >> "$GITHUB_OUTPUT"
           echo "drpy_node=${DRPY_NODE_TAG#v}" >> "$GITHUB_OUTPUT"
 
+          ATVLOADLY_TAG=$(get_ghcr_latest "bitxeno/atvloadly")
+          echo "atvloadly_tag=$ATVLOADLY_TAG" >> "$GITHUB_OUTPUT"
+          echo "atvloadly=${ATVLOADLY_TAG#v}" >> "$GITHUB_OUTPUT"
+
           MIHOMO_TAG=$(get_dockerhub_latest "metacubex/mihomo")
           echo "mihomo_tag=$MIHOMO_TAG" >> "$GITHUB_OUTPUT"
           echo "mihomo=${MIHOMO_TAG#v}" >> "$GITHUB_OUTPUT"
@@ -156,6 +160,8 @@ jobs:
           AXONHUB_TAG: ${{ steps.upstream.outputs.axonhub_tag }}
           DRPY_NODE_VERSION: ${{ steps.upstream.outputs.drpy_node }}
           DRPY_NODE_TAG: ${{ steps.upstream.outputs.drpy_node_tag }}
+          ATVLOADLY_VERSION: ${{ steps.upstream.outputs.atvloadly }}
+          ATVLOADLY_TAG: ${{ steps.upstream.outputs.atvloadly_tag }}
           MIHOMO_VERSION: ${{ steps.upstream.outputs.mihomo }}
           MIHOMO_TAG: ${{ steps.upstream.outputs.mihomo_tag }}
           METACUBEXD_VERSION: ${{ steps.upstream.outputs.metacubexd }}
@@ -180,6 +186,7 @@ jobs:
               ('cpa-manager',    'seakee/cpa-manager',        'CPA_MANAGER_VERSION',    'CPA_MANAGER_TAG'),
               ('axonhub',        'looplj/axonhub',            'AXONHUB_VERSION',        'AXONHUB_TAG'),
               ('drpy-node',      'ghcr.io/hjdhnx/drpy-node',  'DRPY_NODE_VERSION',      'DRPY_NODE_TAG'),
+              ('atvloadly',      'ghcr.io/bitxeno/atvloadly', 'ATVLOADLY_VERSION',      'ATVLOADLY_TAG'),
               ('cli-proxy-api',  'eceasy/cli-proxy-api',      'CLI_PROXY_API_VERSION',  'CLI_PROXY_API_TAG'),
               ('mihomo',         'metacubex/mihomo',          'MIHOMO_VERSION',         'MIHOMO_TAG'),
               ('metacubexd',     'ghcr.io/metacubex/metacubexd', 'METACUBEXD_VERSION',   'METACUBEXD_TAG'),

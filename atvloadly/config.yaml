@@ -1,0 +1,31 @@
+name: atvloadly
+version: "0.4.2-1"
+slug: atvloadly
+description: atvloadly Apple TV sideloading service wrapped for Home Assistant
+url: https://github.com/Tabstone/ha_addons/tree/main/atvloadly
+arch:
+  - amd64
+  - aarch64
+init: false
+protected: false
+host_network: true
+host_dbus: true
+full_access: true
+apparmor: false
+map:
+  - addon_config:rw
+ports:
+  80/tcp: 5533
+ports_description:
+  80/tcp: atvloadly web UI and API
+webui: http://[HOST]:[PORT:80]/
+options:
+  TZ: Asia/Shanghai
+  SERVICE_PORT: 80
+  env_vars: []
+schema:
+  TZ: str?
+  SERVICE_PORT: int
+  env_vars:
+    - name: match(^[A-Za-z0-9_]+$)
+      value: str?
