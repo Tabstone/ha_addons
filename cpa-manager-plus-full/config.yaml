@@ -1,0 +1,49 @@
+name: CPA Manager Plus Full
+version: "1.0.1-1"
+slug: cpa-manager-plus-full
+description: CPA Manager Plus full Docker mode with Manager Server, SQLite analytics, and hosted panel
+url: https://github.com/Tabstone/ha_addons/tree/main/cpa-manager-plus-full
+arch:
+  - amd64
+  - aarch64
+init: false
+ingress: true
+ingress_port: 18317
+ingress_entry: /management.html
+map:
+  - addon_config:rw
+ports:
+  18317/tcp: 18317
+ports_description:
+  18317/tcp: CPA Manager Plus Manager Server and hosted panel
+webui: http://[HOST]:[PORT:18317]/management.html
+options:
+  TZ: Asia/Shanghai
+  CPA_MANAGER_ADMIN_KEY: ""
+  CPA_UPSTREAM_URL: ""
+  CPA_MANAGEMENT_KEY: ""
+  USAGE_COLLECTOR_MODE: auto
+  USAGE_RESP_QUEUE: usage
+  USAGE_RESP_POP_SIDE: right
+  USAGE_BATCH_SIZE: 100
+  USAGE_POLL_INTERVAL_MS: 500
+  USAGE_QUERY_LIMIT: 50000
+  USAGE_CORS_ORIGINS: "*"
+  USAGE_RESP_TLS_SKIP_VERIFY: false
+  env_vars: []
+schema:
+  TZ: str?
+  CPA_MANAGER_ADMIN_KEY: password?
+  CPA_UPSTREAM_URL: str?
+  CPA_MANAGEMENT_KEY: password?
+  USAGE_COLLECTOR_MODE: list(auto|subscribe|http|resp)
+  USAGE_RESP_QUEUE: str
+  USAGE_RESP_POP_SIDE: list(left|right)
+  USAGE_BATCH_SIZE: int
+  USAGE_POLL_INTERVAL_MS: int
+  USAGE_QUERY_LIMIT: int
+  USAGE_CORS_ORIGINS: str?
+  USAGE_RESP_TLS_SKIP_VERIFY: bool
+  env_vars:
+    - name: match(^[A-Za-z0-9_]+$)
+      value: str?

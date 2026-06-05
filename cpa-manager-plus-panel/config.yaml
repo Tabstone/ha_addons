@@ -1,0 +1,30 @@
+name: CPA Manager Plus Panel
+version: "1.0.1-1"
+slug: cpa-manager-plus-panel
+description: CPA Manager Plus CPA panel mode helper; serves the release panel asset without Manager Server analytics
+url: https://github.com/Tabstone/ha_addons/tree/main/cpa-manager-plus-panel
+arch:
+  - amd64
+  - aarch64
+init: false
+ingress: true
+ingress_port: 18080
+map:
+  - addon_config:rw
+ports:
+  18080/tcp: 18080
+ports_description:
+  18080/tcp: Static CPA Manager Plus panel helper
+webui: http://[HOST]:[PORT:18080]/
+options:
+  TZ: Asia/Shanghai
+  CPA_PANEL_REPOSITORY: https://github.com/seakee/CPA-Manager-Plus
+  CPA_PANEL_URL: ""
+  env_vars: []
+schema:
+  TZ: str?
+  CPA_PANEL_REPOSITORY: str
+  CPA_PANEL_URL: str?
+  env_vars:
+    - name: match(^[A-Za-z0-9_]+$)
+      value: str?

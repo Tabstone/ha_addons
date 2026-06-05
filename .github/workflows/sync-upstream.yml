@@ -113,9 +113,9 @@ jobs:
           echo "cli_proxy_api_tag=$CLI_TAG" >> "$GITHUB_OUTPUT"
           echo "cli_proxy_api=${CLI_TAG#v}" >> "$GITHUB_OUTPUT"
 
-          CPA_MANAGER_TAG=$(get_dockerhub_latest "seakee/cpa-manager")
-          echo "cpa_manager_tag=$CPA_MANAGER_TAG" >> "$GITHUB_OUTPUT"
-          echo "cpa_manager=${CPA_MANAGER_TAG#v}" >> "$GITHUB_OUTPUT"
+          CPA_MANAGER_PLUS_TAG=$(get_dockerhub_latest "seakee/cpa-manager-plus")
+          echo "cpa_manager_plus_tag=$CPA_MANAGER_PLUS_TAG" >> "$GITHUB_OUTPUT"
+          echo "cpa_manager_plus=${CPA_MANAGER_PLUS_TAG#v}" >> "$GITHUB_OUTPUT"
 
           AXONHUB_TAG=$(get_dockerhub_latest "looplj/axonhub")
           echo "axonhub_tag=$AXONHUB_TAG" >> "$GITHUB_OUTPUT"
@@ -154,8 +154,8 @@ jobs:
           TRENDRADAR_MCP_TAG: ${{ steps.upstream.outputs.trendradar_mcp_tag }}
           CLI_PROXY_API_VERSION: ${{ steps.upstream.outputs.cli_proxy_api }}
           CLI_PROXY_API_TAG: ${{ steps.upstream.outputs.cli_proxy_api_tag }}
-          CPA_MANAGER_VERSION: ${{ steps.upstream.outputs.cpa_manager }}
-          CPA_MANAGER_TAG: ${{ steps.upstream.outputs.cpa_manager_tag }}
+          CPA_MANAGER_PLUS_VERSION: ${{ steps.upstream.outputs.cpa_manager_plus }}
+          CPA_MANAGER_PLUS_TAG: ${{ steps.upstream.outputs.cpa_manager_plus_tag }}
           AXONHUB_VERSION: ${{ steps.upstream.outputs.axonhub }}
           AXONHUB_TAG: ${{ steps.upstream.outputs.axonhub_tag }}
           DRPY_NODE_VERSION: ${{ steps.upstream.outputs.drpy_node }}
@@ -183,7 +183,8 @@ jobs:
           updates = [
               ('trendradar',     'wantcat/trendradar',        'TRENDRADAR_VERSION',     'TRENDRADAR_TAG'),
               ('trendradar-mcp', 'wantcat/trendradar-mcp',    'TRENDRADAR_MCP_VERSION', 'TRENDRADAR_MCP_TAG'),
-              ('cpa-manager',    'seakee/cpa-manager',        'CPA_MANAGER_VERSION',    'CPA_MANAGER_TAG'),
+              ('cpa-manager-plus-full', 'seakee/cpa-manager-plus', 'CPA_MANAGER_PLUS_VERSION', 'CPA_MANAGER_PLUS_TAG'),
+              ('cpa-manager-plus-panel', 'seakee/cpa-manager-plus', 'CPA_MANAGER_PLUS_VERSION', 'CPA_MANAGER_PLUS_TAG'),
               ('axonhub',        'looplj/axonhub',            'AXONHUB_VERSION',        'AXONHUB_TAG'),
               ('drpy-node',      'ghcr.io/hjdhnx/drpy-node',  'DRPY_NODE_VERSION',      'DRPY_NODE_TAG'),
               ('atvloadly',      'ghcr.io/bitxeno/atvloadly', 'ATVLOADLY_VERSION',      'ATVLOADLY_TAG'),

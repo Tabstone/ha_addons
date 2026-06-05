@@ -11,6 +11,8 @@
 | TrendRadar | `trendradar/` | 趋势分析服务，提供 Web UI 与通知能力 | 公开源码地址暂未确认，当前直接跟随镜像源 | [wantcat/trendradar](https://hub.docker.com/r/wantcat/trendradar) |
 | TrendRadar MCP | `trendradar-mcp/` | TrendRadar 的 MCP 服务，复用主 add-on 数据 | 公开源码地址暂未确认，当前直接跟随镜像源 | [wantcat/trendradar-mcp](https://hub.docker.com/r/wantcat/trendradar-mcp) |
 | CLI Proxy API | `cli-proxy-api/` | CLI Proxy API 服务，保留配置与鉴权目录 | 公开源码地址暂未确认，当前直接跟随镜像源 | [eceasy/cli-proxy-api](https://hub.docker.com/r/eceasy/cli-proxy-api) |
+| CPA Manager Plus Full | `cpa-manager-plus-full/` | CPA Manager Plus 完整 Docker/Manager Server 模式，提供 SQLite 请求统计、模型价格和内置面板 | [seakee/CPA-Manager-Plus](https://github.com/seakee/CPA-Manager-Plus) | [seakee/cpa-manager-plus](https://hub.docker.com/r/seakee/cpa-manager-plus) |
+| CPA Manager Plus Panel | `cpa-manager-plus-panel/` | CPA Manager Plus 的 CPA panel 模式辅助 add-on，用于区分纯 CPA 自托管面板，不运行 Manager Server | [seakee/CPA-Manager-Plus](https://github.com/seakee/CPA-Manager-Plus) | [seakee/cpa-manager-plus](https://hub.docker.com/r/seakee/cpa-manager-plus) |
 | AxonHub | `axonhub/` | AI 网关与模型代理平台，默认 SQLite 单容器封装 | [looplj/axonhub](https://github.com/looplj/axonhub) | [looplj/axonhub](https://hub.docker.com/r/looplj/axonhub) |
 | atvloadly | `atvloadly/` | Apple TV IPA 侧载与自动刷新服务，保留配对和签名数据 | [bitxeno/atvloadly](https://github.com/bitxeno/atvloadly) | [ghcr.io/bitxeno/atvloadly](https://github.com/bitxeno/atvloadly/pkgs/container/atvloadly) |
 | drpy-node | `drpy-node/` | drpyS Node.js 服务，保留配置、订阅、源文件和缓存目录 | [hjdhnx/drpy-node](https://github.com/hjdhnx/drpy-node) | [ghcr.io/hjdhnx/drpy-node](https://github.com/users/hjdhnx/packages/container/package/drpy-node) |

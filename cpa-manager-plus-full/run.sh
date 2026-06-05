@@ -20,4 +20,4 @@ if [ "$#" -gt 0 ]; then
   exec "$@"
 fi
 
-exec cpa-manager
+exec cpa-manager-plus
