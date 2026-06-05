@@ -16,6 +16,7 @@
 | AxonHub | `axonhub/` | AI 网关与模型代理平台，默认 SQLite 单容器封装 | [looplj/axonhub](https://github.com/looplj/axonhub) | [looplj/axonhub](https://hub.docker.com/r/looplj/axonhub) |
 | atvloadly | `atvloadly/` | Apple TV IPA 侧载与自动刷新服务，保留配对和签名数据 | [bitxeno/atvloadly](https://github.com/bitxeno/atvloadly) | [ghcr.io/bitxeno/atvloadly](https://github.com/bitxeno/atvloadly/pkgs/container/atvloadly) |
 | drpy-node | `drpy-node/` | drpyS Node.js 服务，保留配置、订阅、源文件和缓存目录 | [hjdhnx/drpy-node](https://github.com/hjdhnx/drpy-node) | [ghcr.io/hjdhnx/drpy-node](https://github.com/users/hjdhnx/packages/container/package/drpy-node) |
+| Microsoft Rewards Script | `microsoft-rewards-script/` | Microsoft Rewards 自动任务脚本，后台 cron 运行并保留配置与浏览器会话 | [hex-ci/Microsoft-Rewards-Script](https://github.com/hex-ci/Microsoft-Rewards-Script) | [ghcr.io/thenetsky/microsoft-rewards-script](https://github.com/TheNetsky/Microsoft-Rewards-Script/pkgs/container/microsoft-rewards-script) |
 | Mihomo | `mihomo/` | Mihomo 核心，保留配置目录并映射宿主网络能力 | [MetaCubeX/mihomo](https://github.com/MetaCubeX/mihomo) | [metacubex/mihomo](https://hub.docker.com/r/metacubex/mihomo) |
 | MetaCubeXD | `metacubexd/` | Mihomo 的 Web UI | [MetaCubeX/metacubexd](https://github.com/MetaCubeX/metacubexd) | [ghcr.io/metacubex/metacubexd](https://github.com/MetaCubeX/metacubexd/pkgs/container/metacubexd) |
 | Metapi | `metapi/` | Metapi AI API 聚合管理与统一代理，默认持久化 SQLite 数据目录 | [cita-777/metapi](https://github.com/cita-777/metapi) | [1467078763/metapi](https://hub.docker.com/r/1467078763/metapi) |

@@ -1,0 +1,3 @@
+build_from:
+  amd64: ghcr.io/thenetsky/microsoft-rewards-script:3.1.6
+  aarch64: ghcr.io/thenetsky/microsoft-rewards-script:3.1.6

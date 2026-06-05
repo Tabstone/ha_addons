@@ -1,0 +1,67 @@
+name: Microsoft Rewards Script
+version: "3.1.6-1"
+slug: microsoft-rewards-script
+description: Microsoft Rewards automation script wrapped for Home Assistant
+url: https://github.com/Tabstone/ha_addons/tree/main/microsoft-rewards-script
+arch:
+  - amd64
+  - aarch64
+init: false
+map:
+  - addon_config:rw
+options:
+  TZ: Asia/Shanghai
+  CRON_SCHEDULE: "0 7 * * *"
+  RUN_ON_START: true
+  SKIP_RANDOM_SLEEP: false
+  MIN_SLEEP_MINUTES: 5
+  MAX_SLEEP_MINUTES: 50
+  STUCK_PROCESS_TIMEOUT_HOURS: 8
+  ACCOUNT_1_EMAIL: ""
+  ACCOUNT_1_PASSWORD: ""
+  ACCOUNT_1_TOTP_SECRET: ""
+  ACCOUNT_1_RECOVERY_EMAIL: ""
+  ACCOUNT_1_GEO_LOCALE: auto
+  ACCOUNT_1_LANG_CODE: en
+  ACCOUNT_2_EMAIL: ""
+  ACCOUNT_2_PASSWORD: ""
+  CONFIG_CLUSTERS: 1
+  CONFIG_GLOBAL_TIMEOUT: 30sec
+  CONFIG_DEBUG_LOGS: false
+  CONFIG_ERROR_DIAGNOSTICS: false
+  CONFIG_DISCORD_ENABLED: false
+  CONFIG_DISCORD_URL: ""
+  CONFIG_NTFY_ENABLED: false
+  CONFIG_NTFY_URL: ""
+  CONFIG_NTFY_TOPIC: ""
+  CONFIG_NTFY_TOKEN: ""
+  env_vars: []
+schema:
+  TZ: str?
+  CRON_SCHEDULE: str
+  RUN_ON_START: bool
+  SKIP_RANDOM_SLEEP: bool
+  MIN_SLEEP_MINUTES: int
+  MAX_SLEEP_MINUTES: int
+  STUCK_PROCESS_TIMEOUT_HOURS: int
+  ACCOUNT_1_EMAIL: str?
+  ACCOUNT_1_PASSWORD: password?
+  ACCOUNT_1_TOTP_SECRET: password?
+  ACCOUNT_1_RECOVERY_EMAIL: str?
+  ACCOUNT_1_GEO_LOCALE: str?
+  ACCOUNT_1_LANG_CODE: str?
+  ACCOUNT_2_EMAIL: str?
+  ACCOUNT_2_PASSWORD: password?
+  CONFIG_CLUSTERS: int
+  CONFIG_GLOBAL_TIMEOUT: str
+  CONFIG_DEBUG_LOGS: bool
+  CONFIG_ERROR_DIAGNOSTICS: bool
+  CONFIG_DISCORD_ENABLED: bool
+  CONFIG_DISCORD_URL: str?
+  CONFIG_NTFY_ENABLED: bool
+  CONFIG_NTFY_URL: str?
+  CONFIG_NTFY_TOPIC: str?
+  CONFIG_NTFY_TOKEN: password?
+  env_vars:
+    - name: match(^[A-Za-z0-9_]+$)
+      value: str?
