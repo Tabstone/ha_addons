@@ -1,5 +1,5 @@
 name: CPA Manager Plus Full
-version: "1.1.1-1"
+version: "1.2.1-1"
 slug: cpa-manager-plus-full
 description: CPA Manager Plus full Docker mode with Manager Server, SQLite analytics, and hosted panel
 url: https://github.com/Tabstone/ha_addons/tree/main/cpa-manager-plus-full
