@@ -1,5 +1,5 @@
 name: CLI Proxy API
-version: "7.1.61-1"
+version: "7.1.66-1"
 slug: cli-proxy-api
 description: CLI Proxy API wrapped for Home Assistant with persistent config and auth directories
 url: https://github.com/Tabstone/Stone_Addons/tree/main/cli-proxy-api
