@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.252.0-1
+
+- Sync upstream image [ghcr.io/metacubex/metacubexd:v1.252.0](https://github.com/MetaCubeX/metacubexd/pkgs/container/metacubexd).
+- Upstream project: [MetaCubeX/metacubexd](https://github.com/MetaCubeX/metacubexd).
+- Upstream release: [v1.252.0](https://github.com/MetaCubeX/metacubexd/releases/tag/v1.252.0).
+- Upstream changelog summary:
+  - **proxies:** add collapse/expand all proxy groups toggle ([12dbea7](https://github.com/MetaCubeX/metacubexd/commit/12dbea7bdf22eae7dd9819f2b4ef2c23c951dc6c))
+
+
 ## 1.251.3-1
 
 - Sync upstream image to v1.251.3.
